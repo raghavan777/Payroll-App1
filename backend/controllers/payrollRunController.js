@@ -1,5 +1,6 @@
 const PayrollRun = require("../models/PayrollRun");
 const Payroll = require("../models/Payroll");
+const { logAction } = require("./auditController");
 const { runPayroll, savePayroll } = require("../services/payrollRunService");
 
 /**
@@ -65,6 +66,15 @@ exports.approvePayroll = async (req, res) => {
       year,
       status: "APPROVED",
       generatedAt: new Date(),
+    });
+
+    await logAction({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      action: "BULK_PAYROLL_APPROVED",
+      module: "PAYROLL",
+      details: { month, year, country, state },
+      req
     });
 
     return res.status(201).json({

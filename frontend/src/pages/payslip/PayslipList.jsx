@@ -10,7 +10,7 @@ export default function PayslipList() {
 
     const loadPayslips = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/payslip/my", {
+            const res = await axios.get("http://localhost:5000/api/payroll/history/me", {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },

@@ -1,145 +1,147 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { sidebarItems } from "../config/sidebarConfig";
-import * as Icons from "react-icons/md";
-import { useState } from "react";
+import * as MdIcons from "react-icons/md";
+
+// Helper to render icon by name
+const Icon = ({ name, size = 20 }) => {
+  const IconComponent = MdIcons[name];
+  return IconComponent ? <IconComponent size={size} /> : <MdIcons.MdHelpOutline size={size} />;
+};
 
 export default function DashboardLayout() {
-  const { role, hasPermission, logout } = useAuth();
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(true);
-  const [openMenu, setOpenMenu] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [openMenus, setOpenMenus] = useState({});
 
-  const currentRole = role || "SUPER_ADMIN";
+  const { user, role, logout } = useAuth();
+  const currentRole = role || "EMPLOYEE";
 
-  const renderIcon = (name) => {
-    const Icon = Icons[name];
-    return Icon ? <Icon size={22} /> : null;
+  const routes = sidebarItems[currentRole] || sidebarItems["EMPLOYEE"];
+
+  const toggleMenu = (label) => {
+    setOpenMenus(prev => ({ ...prev, [label]: !prev[label] }));
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+  const renderNavLink = (item) => (
+    <NavLink
+      key={item.path}
+      to={item.path}
+      style={({ isActive }) => ({
+        display: "block",
+        padding: "10px",
+        margin: "6px 0",
+        borderRadius: "6px",
+        textDecoration: "none",
+        color: "#fff",
+        fontSize: "14px",
+        background: isActive ? "rgba(255,255,255,0.2)" : "transparent",
+        transition: "0.2s",
+      })}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: collapsed ? "center" : "flex-start" }}>
+        <Icon name={item.icon} />
+        {!collapsed && <span>{item.label}</span>}
+      </div>
+    </NavLink>
+  );
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
-      {/* SIDEBAR */}
-      <aside
-        className={`${isOpen ? "w-64" : "w-20"
-          } bg-gradient-to-b from-violet-600 to-indigo-600 text-white flex flex-col transition-all duration-300`}
+    <div style={{ display: "flex" }}>
+      {/* ================= SIDEBAR ================= */}
+      <div
+        style={{
+          width: collapsed ? "70px" : "230px",
+          background: "linear-gradient(180deg,#6a11cb,#2575fc)",
+          color: "#fff",
+          minHeight: "100vh",
+          padding: "15px",
+          transition: "0.3s",
+        }}
       >
-        {/* HEADER */}
-        <div className="flex items-center justify-between p-4">
-          {isOpen && <span className="text-lg font-bold">Payroll SaaS</span>}
+        {/* ===== HEADER ===== */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          {!collapsed && <h3>Payroll SaaS</h3>}
           <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="p-1 bg-white/10 hover:bg-white/20 rounded-md"
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "#fff",
+              fontSize: "18px",
+              cursor: "pointer",
+            }}
           >
-            {isOpen ? (
-              <Icons.MdChevronLeft size={20} />
-            ) : (
-              <Icons.MdChevronRight size={20} />
-            )}
+            {collapsed ? "➡" : "⬅"}
           </button>
         </div>
 
-        {/* NAV */}
-        <nav className="flex-1 px-2 space-y-1 overflow-y-auto">
-          {(sidebarItems[currentRole] || []).map((item, idx) => {
-            if (item.permission && !hasPermission(item.permission)) return null;
-
-            /* =====================
-               PARENT MENU (Payroll)
-            ===================== */
+        {/* ===== MENU ===== */}
+        <div style={{ marginTop: "20px" }}>
+          {routes.map((item) => {
             if (item.children) {
+              const isOpen = openMenus[item.label];
               return (
-                <div key={idx}>
-                  <button
-                    onClick={() =>
-                      setOpenMenu(openMenu === item.label ? null : item.label)
-                    }
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-md hover:bg-black/10 transition"
+                <div key={item.label}>
+                  <div
+                    onClick={() => toggleMenu(item.label)}
+                    style={{
+                      padding: "20px",
+                      margin: "6px 0",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      background: "transparent",
+                      transition: "0.2s",
+                    }}
                   >
-                    {renderIcon(item.icon)}
-                    {isOpen && (
-                      <>
-                        <span className="text-sm font-medium flex-1 text-left">
-                          {item.label}
-                        </span>
-                        {openMenu === item.label ? (
-                          <Icons.MdExpandLess />
-                        ) : (
-                          <Icons.MdExpandMore />
-                        )}
-                      </>
-                    )}
-                  </button>
-
-                  {/* CHILD ITEMS */}
-                  {openMenu === item.label &&
-                    isOpen &&
-                    item.children
-                      .filter(
-                        (child) =>
-                          !child.permission ||
-                          hasPermission(child.permission)
-                      )
-                      .map((child) => (
-                        <NavLink
-                          key={child.path}
-                          to={child.path}
-                          className={({ isActive }) =>
-                            `ml-10 flex items-center gap-2 px-3 py-2 rounded-md text-sm transition ${isActive
-                              ? "bg-black/30"
-                              : "hover:bg-black/10"
-                            }`
-                          }
-                        >
-                          {renderIcon(child.icon)}
-                          <span>{child.label}</span>
-                        </NavLink>
-                      ))}
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: collapsed ? "center" : "flex-start" }}>
+                      <Icon name={item.icon} />
+                      {!collapsed && <span>{item.label}</span>}
+                    </div>
+                    {!collapsed && <span>{isOpen ? "▾" : "▸"}</span>}
+                  </div>
+                  {isOpen && !collapsed && (
+                    <div style={{ paddingLeft: "20px" }}>
+                      {item.children.map(child => renderNavLink({ ...child, icon: "MdSubdirectoryArrowRight" }))}
+                    </div>
+                  )}
                 </div>
               );
             }
-
-            /* =====================
-               NORMAL SINGLE LINK
-            ===================== */
-            return (
-              <NavLink
-                key={idx}
-                to={item.path}
-                end
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-3 rounded-md transition ${isActive ? "bg-black/20" : "hover:bg-black/10"
-                  }`
-                }
-              >
-                {renderIcon(item.icon)}
-                {isOpen && (
-                  <span className="text-sm font-medium">{item.label}</span>
-                )}
-              </NavLink>
-            );
+            return renderNavLink(item);
           })}
-        </nav>
 
-        {/* LOGOUT */}
-        <button
-          onClick={handleLogout}
-          className="mt-auto flex items-center gap-3 px-3 py-3 text-red-200 hover:bg-red-500/20 transition mx-2 mb-3 rounded"
-        >
-          <Icons.MdLogout size={20} />
-          {isOpen && <span>Logout</span>}
-        </button>
-      </aside>
+          <button
+            onClick={logout}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginTop: "20px",
+              border: "none",
+              background: "rgba(255, 0, 0, 1)",
+              color: "#fff",
+              borderRadius: "6px",
+              cursor: "pointer",
+              textAlign: collapsed ? "center" : "left",
+              fontSize: "14px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: collapsed ? "center" : "flex-start" }}>
+              <MdIcons.MdLogout size={20} />
+              {!collapsed && <span>Logout</span>}
+            </div>
+          </button>
+        </div>
+      </div>
 
-      {/* MAIN CONTENT */}
-      <main className="flex-1 p-6 overflow-y-auto">
+      {/* ================= PAGE CONTENT ================= */}
+      <div style={{ flex: 1, padding: "20px", background: "#f5f6fa", minHeight: "100vh" }}>
         <Outlet />
-      </main>
+      </div>
     </div>
   );
 }

@@ -8,8 +8,9 @@ export const sidebarItems = {
     { path: "/tax/slabs", label: "Tax Slab Form", icon: "MdReceiptLong" },
     { path: "/tax/declarations/new", label: "Tax Declaration Form", icon: "MdDescription" },
     { path: "/tax/declarations", label: "Tax Declaration List", icon: "MdListAlt" },
-    { path: "/statutory", label: "Statutory Config", icon: "MdGavel" },
-    { path: "/salary-template", label: "Salary Templates", icon: "MdCalculate" },
+    { path: "/reports", label: "Reports", icon: "MdBarChart" },
+    { path: "/audit-logs", label: "Audit Trail", icon: "MdPolicy" },
+    { path: "/salary-templates", label: "Salary Templates", icon: "MdSettings" },
     {
       label: "Payroll",
       icon: "MdPayments",

@@ -58,8 +58,10 @@ app.use("/api/payroll", payrollRoutes);
 app.use("/api/payslips", payslipRoutes);
 app.use("/api/tax", taxRoutes);
 app.use("/api/report", require("./routes/reportRoutes"));
+app.use("/api/audit", require("./routes/auditRoutes"));
 app.use("/api/analytics", require("./routes/analyticsRoutes"));
 app.use("/api/employee", require("./routes/employeeRoutes"));
+app.use("/api/organization", require("./routes/organizationRoutes"));
 app.use("/api/notification", require("./routes/notificationRoutes"));
 
 // ✅ MODULE 5: Attendance & Leave

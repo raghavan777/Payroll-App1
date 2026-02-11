@@ -60,7 +60,7 @@ const PayrollProfileEdit = () => {
       <div className="bg-white p-6 rounded shadow-md max-w-4xl mx-auto">
         <h2 className="text-xl font-semibold mb-6">Edit Payroll Profile</h2>
 
-        <form onSubmit={handleSubmit} className="gremployeeCode gremployeeCode-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
 
           <div>
             <label className="block text-sm font-medium mb-1">Basic Salary</label>

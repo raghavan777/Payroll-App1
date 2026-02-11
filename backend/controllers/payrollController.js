@@ -3,6 +3,7 @@ const StatutoryConfig = require("../models/StatutoryConfig");
 const TaxSlab = require("../models/TaxSlab");
 const Payroll = require("../models/Payroll");
 const Employee = require("../models/Employee");
+const { logAction } = require("./auditController");
 
 const { getAttendance, calculateLOP } = require("../services/attendanceService");
 const { calculateOvertime } = require("../services/overtimeService");
@@ -44,18 +45,22 @@ exports.payrollPreview = async (req, res) => {
   }
 };
 
+const { calculateComprehensivePayroll } = require("../services/payrollCalcService");
+
 /* =====================================================
    RUN PAYROLL — CALCULATE + SAVE
 ===================================================== */
 exports.calculatePayroll = async (req, res) => {
   try {
-    const { employeeCode, country, state, startDate, endDate } = req.body;
+    const { employeeCode, country, state, startDate, endDate, financialYear } = req.body;
 
     if (!employeeCode || !startDate || !endDate) {
       return res.status(400).json({
         message: "employeeCode, startDate, endDate are required",
       });
     }
+
+    const fy = financialYear || "2023-2024"; // Default fallback
 
     const profile = await PayrollProfile.findOne({ employeeCode }).lean();
 
@@ -65,96 +70,35 @@ exports.calculatePayroll = async (req, res) => {
       });
     }
 
-    const basicMonthly = Number(profile.salaryStructure.basic) || 0;
-    const hra = Number(profile.salaryStructure.hra) || 0;
-    const allowances = Number(profile.salaryStructure.allowances) || 0;
-
-    const dailyBasic = basicMonthly / 30;
-    const hourlyRate = dailyBasic / 8;
-
-    const attendanceRecords =
-      (await getAttendance(
-        employeeCode,
-        new Date(startDate),
-        new Date(endDate)
-      )) || [];
-
-    const lopData = await calculateLOP(
+    const payrollData = await calculateComprehensivePayroll({
       employeeCode,
-      attendanceRecords,
-      new Date(startDate),
-      new Date(endDate),
-      dailyBasic
-    );
-
-    const workedDays = Number(lopData.workedDays) || 0;
-    const lopDays = Number(lopData.lopDays) || 0;
-
-    const overtimeData = calculateOvertime(attendanceRecords, hourlyRate);
-
-    const earnedBasic = dailyBasic * workedDays;
-
-    const grossSalary =
-      earnedBasic +
-      hra +
-      allowances +
-      (Number(overtimeData.overtimePay) || 0);
-
-    const statutory = await StatutoryConfig.findOne({
+      organizationId: req.user.organizationId,
+      startDate,
+      endDate,
+      baseSalary: Number(profile.salaryStructure.basic) || 0,
+      hra: Number(profile.salaryStructure.hra) || 0,
+      allowances: Number(profile.salaryStructure.allowances) || 0,
       country,
       state,
-      organizationId: req.user.organizationId,
-    }).lean();
-
-    const pf = statutory?.pfPercentage
-      ? (earnedBasic * statutory.pfPercentage) / 100
-      : 0;
-
-    const esi = statutory?.esiPercentage
-      ? (grossSalary * statutory.esiPercentage) / 100
-      : 0;
-
-    const professionalTax = Number(statutory?.professionalTax) || 0;
-
-    const annualIncome = grossSalary * 12;
-
-    let tax = 0;
-    if (!Number.isNaN(annualIncome)) {
-      const slab = await TaxSlab.findOne({
-        country,
-        state,
-        minIncome: { $lte: annualIncome },
-        maxIncome: { $gte: annualIncome },
-      }).lean();
-
-      if (slab?.taxPercentage) {
-        tax = (grossSalary * slab.taxPercentage) / 100;
-      }
-    }
-
-    const netSalary =
-      grossSalary - (pf + esi + professionalTax + tax);
-
-    await Payroll.create({
-      employeeCode,
-      periodStart: startDate,
-      periodEnd: endDate,
-      basic: earnedBasic,
-      hra,
-      allowances,
-      workedDays,
-      lopDays,
-      grossSalary,
-      netSalary,
-      status: "PENDING",
-      organizationId: req.user.organizationId,
+      financialYear: fy
     });
 
-    res.status(201).json({ message: "Payroll generated successfully" });
+    await Payroll.create(payrollData);
+
+    await logAction({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      action: "PAYROLL_CALCULATED",
+      module: "PAYROLL",
+      details: { employeeCode, startDate, endDate },
+      req
+    });
+
+    res.status(201).json({ message: "Payroll generated successfully", data: payrollData });
 
   } catch (err) {
     console.error("RUN PAYROLL ERROR:", err);
-    res.status(500).json({ message: "Payroll generation failed" });
+    res.status(500).json({ message: "Payroll generation failed: " + err.message });
   }
 };
 
@@ -181,6 +125,15 @@ exports.approvePayroll = async (req, res) => {
     payroll.approvedBy = req.user.id;
 
     await payroll.save();
+
+    await logAction({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      action: "PAYROLL_APPROVED",
+      module: "PAYROLL",
+      details: { payrollId },
+      req
+    });
 
     /* ================= CREATE NOTIFICATION ================= */
     await createNotification({

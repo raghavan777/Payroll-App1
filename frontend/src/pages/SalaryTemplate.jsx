@@ -10,7 +10,7 @@ export default function SalaryTemplateList() {
 
   const loadTemplates = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/salary-template/template", {
+      const res = await axios.get("http://localhost:5000/api/salary-template", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTemplates(res.data);
@@ -41,20 +41,24 @@ export default function SalaryTemplateList() {
           <thead>
             <tr className="bg-gray-200">
               <th className="p-2 border">Template Name</th>
-              <th className="p-2 border">Earnings</th>
-              <th className="p-2 border">Deductions</th>
+              <th className="p-2 border">Basic (%)</th>
+              <th className="p-2 border">HRA (%)</th>
+              <th className="p-2 border">Allowances (%)</th>
+              <th className="p-2 border">Tax (%)</th>
             </tr>
           </thead>
           <tbody>
             {templates.length > 0 ? templates.map(t => (
               <tr key={t._id}>
                 <td className="p-2 border">{t.name}</td>
-                <td className="p-2 border">{t.earnings.length} Components</td>
-                <td className="p-2 border">{t.deductions.length} Components</td>
+                <td className="p-2 border">{t.basicPercent}%</td>
+                <td className="p-2 border">{t.hraPercent}%</td>
+                <td className="p-2 border">{t.allowancePercent}%</td>
+                <td className="p-2 border">{t.taxPercent}%</td>
               </tr>
             )) : (
               <tr>
-                <td colSpan="3" className="text-center p-4 text-gray-500">
+                <td colSpan="5" className="text-center p-4 text-gray-500">
                   No templates found
                 </td>
               </tr>

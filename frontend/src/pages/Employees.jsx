@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { getEmployees } from "../api/employeeApi";
-import "../styles/userManagement.css";
+import "../styles/employees.css";
 
-export default function Users() {
+export default function Employees() {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

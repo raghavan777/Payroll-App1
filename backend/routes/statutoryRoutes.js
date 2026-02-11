@@ -4,17 +4,23 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const role = require("../middleware/role");
 
-const { addTaxSlab } = require("../controllers/taxController");
-const { addStatutoryConfig } = require("../controllers/statutoryController");
-const { calculatePayroll } = require("../controllers/payrollController");
+const {
+    getStatutoryConfigs,
+    addStatutoryConfig,
+    updateStatutoryConfig,
+    deleteStatutoryConfig
+} = require("../controllers/statutoryController");
 
-// 🔹 Add Tax Slab (SUPER_ADMIN only)
-router.post("/tax-slab", auth, role(["SUPER_ADMIN"]), addTaxSlab);
+// 🔹 GET all Statutory Configs (All authenticated users can see, or restrict to ADMIN)
+router.get("/", auth, getStatutoryConfigs);
 
-// 🔹 Add Statutory Config (SUPER_ADMIN only)
-router.post("/statutory", auth, role(["SUPER_ADMIN"]), addStatutoryConfig);
+// 🔹 POST Add Statutory Config (SUPER_ADMIN only)
+router.post("/", auth, role(["SUPER_ADMIN"]), addStatutoryConfig);
 
-// 🔹 Run Payroll (NO ROLE VALIDATION — employee/admin allowed)
-router.post("/payroll", auth, calculatePayroll);
+// 🔹 PUT Update Statutory Config (SUPER_ADMIN only)
+router.put("/:id", auth, role(["SUPER_ADMIN"]), updateStatutoryConfig);
+
+// 🔹 DELETE Statutory Config (SUPER_ADMIN only)
+router.delete("/:id", auth, role(["SUPER_ADMIN"]), deleteStatutoryConfig);
 
 module.exports = router;

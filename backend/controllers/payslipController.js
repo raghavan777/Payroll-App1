@@ -5,6 +5,7 @@ const PDFDocument = require("pdfkit");
 const Payroll = require("../models/Payroll");
 const Employee = require("../models/Employee");
 const Payslip = require("../models/Payslip");
+const { logAction } = require("./auditController");
 
 const { createNotification } = require("./notificationController");
 
@@ -176,6 +177,15 @@ exports.generatePayslip = async (req, res) => {
       payPeriod,
       issueDate,
       pdfUrl,
+    });
+
+    await logAction({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      action: "PAYSLIP_GENERATED",
+      module: "PAYSLIP",
+      details: { payrollId, employeeCode: employee.employeeCode },
+      req
     });
 
     /* ================= CREATE NOTIFICATION (SAFE) ================= */

@@ -15,6 +15,7 @@ module.exports = async (req, res, next) => {
 
     // Attach EVERYTHING needed downstream
     req.user = {
+      id: decoded.userId, // <--- Compatibility alias
       userId: decoded.userId,
       role: decoded.role,
       name: decoded.name,

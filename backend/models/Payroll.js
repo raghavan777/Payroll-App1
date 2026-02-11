@@ -25,6 +25,17 @@ const payrollSchema = new mongoose.Schema({
   grossSalary: Number,
   netSalary: Number,
 
+  // Statutory & Tax Details
+  pf: { type: Number, default: 0 },
+  esi: { type: Number, default: 0 },
+  professionalTax: { type: Number, default: 0 },
+  tax: { type: Number, default: 0 },
+
+  // Attendance related
+  overtimeHours: { type: Number, default: 0 },
+  overtimePay: { type: Number, default: 0 },
+  lopAmount: { type: Number, default: 0 },
+
   status: {
     type: String,
     enum: ["PENDING", "APPROVED"], // ✅ MUST MATCH CONTROLLER
