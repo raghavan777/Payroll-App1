@@ -5,17 +5,32 @@ import {
 } from "../services/payrollApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import {
+  MdAdd,
+  MdVisibility,
+  MdEdit,
+  MdDelete,
+  MdHistory,
+  MdAccountBalance,
+  MdPayments,
+  MdSearch
+} from "react-icons/md";
 
 export default function PayrollProfileList() {
   const [profiles, setProfiles] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const loadProfiles = async () => {
     try {
+      setLoading(true);
       const res = await getPayrollProfiles();
       setProfiles(res.data);
     } catch {
       toast.error("Failed to load payroll profiles");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -24,129 +39,158 @@ export default function PayrollProfileList() {
   }, []);
 
   const handleDelete = async (employeeCode) => {
-    if (!window.confirm("Delete this payroll profile?")) return;
+    if (!window.confirm("Are you sure you want to delete this financial profile?")) return;
 
     try {
       await deletePayrollProfile(employeeCode);
-      toast.success("Payroll profile deleted");
+      toast.success("Financial profile removed");
       loadProfiles();
     } catch {
-      toast.error("Delete failed");
+      toast.error("Process interrupted");
     }
   };
 
+  const filteredProfiles = profiles.filter(p =>
+    p.employeeCode.toLowerCase().includes(search.toLowerCase()) ||
+    p.employeeName?.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto bg-white shadow-md rounded-lg p-6">
-
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Payroll Profiles</h2>
-
-          <button
-            onClick={() => navigate("/payroll-profile/create")}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            + Add Payroll Profile
-          </button>
+    <div className="space-y-8">
+      {/* Header & Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-slate-800 tracking-tight">Financial Profiles</h1>
+          <p className="text-slate-500 font-medium mt-1">Configure compensation and tax structures for the team.</p>
         </div>
 
+        <button
+          onClick={() => navigate("/payroll-profile/create")}
+          className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-2xl shadow-xl shadow-indigo-600/20 active:scale-95 transition-all"
+        >
+          <MdAdd size={20} />
+          <span>New Profile</span>
+        </button>
+      </div>
+
+      {/* Modern Table Container */}
+      <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        {/* Search & Stats Bar */}
+        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="relative max-w-md w-full">
+            <MdSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+            <input
+              className="w-full bg-white border border-slate-200 pl-12 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400 font-medium"
+              placeholder="Filter by code or name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="px-4 py-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">{profiles.length} Total Profiles</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Table Content */}
         <div className="overflow-x-auto">
-          <table className="w-full border border-gray-300 text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-3 border">Employee Code</th>
-                <th className="p-3 border">Employee Name</th>
-                <th className="p-3 border">Basic</th>
-                <th className="p-3 border">HRA</th>
-                <th className="p-3 border">Allowances</th>
-                <th className="p-3 border">Tax Regime</th>
-                <th className="p-3 border">Bank</th>
-                <th className="p-3 border">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {profiles.length ? (
-                profiles.map((p) => (
-                  <tr key={p._id}>
-                    <td className="p-3 border font-semibold">
-                      {p.employeeCode}
+          {loading ? (
+            <div className="p-20 text-center">
+              <div className="w-12 h-12 border-4 border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-slate-500 font-bold tracking-tight">Syncing financial records...</p>
+            </div>
+          ) : filteredProfiles.length === 0 ? (
+            <div className="p-20 text-center">
+              <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-300">
+                <MdPayments size={48} />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">No Profiles Active</h3>
+              <p className="text-slate-500 max-w-xs mx-auto">Create a profile to begin managing compensation and statutory deductions.</p>
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Employee Entity</th>
+                  <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest text-center">Base Comp</th>
+                  <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest text-center">Regime</th>
+                  <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest text-center">Primary Bank</th>
+                  <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest text-right">Control</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredProfiles.map((p) => (
+                  <tr key={p._id} className="hover:bg-indigo-50/20 transition-colors group">
+                    <td className="px-8 py-5">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black tracking-tighter">
+                          {p.employeeCode}
+                        </div>
+                        <div>
+                          <p className="font-black text-slate-800 tracking-tight leading-none mb-1">{p.employeeName || "—"}</p>
+                          <span className="text-xs font-bold text-slate-400">Financial Profile ID: {p._id.slice(-6).toUpperCase()}</span>
+                        </div>
+                      </div>
                     </td>
-
-                    {/* ✅ EMPLOYEE NAME */}
-                    <td className="p-3 border">
-                      {p.employeeName || "—"}
+                    <td className="px-8 py-5">
+                      <div className="text-center">
+                        <p className="text-sm font-black text-slate-700">${p.salaryStructure?.basic?.toLocaleString()}</p>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Monthly Basic</p>
+                      </div>
                     </td>
-
-                    <td className="p-3 border">
-                      {p.salaryStructure?.basic}
+                    <td className="px-8 py-5 text-center">
+                      <span className={`inline-flex px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${p.taxRegime === 'NEW' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-blue-50 text-blue-600 border-blue-100'
+                        }`}>
+                        {p.taxRegime} SYSTEM
+                      </span>
                     </td>
-                    <td className="p-3 border">
-                      {p.salaryStructure?.hra}
+                    <td className="px-8 py-5">
+                      <div className="flex items-center justify-center gap-2 text-slate-600">
+                        <MdAccountBalance size={14} className="text-slate-400" />
+                        <span className="text-sm font-bold">{p.bankDetails?.bankName || "N/A"}</span>
+                      </div>
                     </td>
-                    <td className="p-3 border">
-                      {p.salaryStructure?.allowances}
-                    </td>
-                    <td className="p-3 border">
-                      {p.taxRegime}
-                    </td>
-                    <td className="p-3 border">
-                      {p.bankDetails?.bankName}
-                    </td>
-
-                    {/* ✅ ACTIONS */}
-                    <td className="p-3 border">
-                      <div className="flex gap-3">
+                    <td className="px-8 py-5 text-right">
+                      <div className="flex items-center justify-end gap-2">
                         <button
-                          className="text-blue-600 hover:underline"
-                          onClick={() =>
-                            navigate(`/payroll-profile/${p.employeeCode}`)
-                          }
+                          onClick={() => navigate(`/payroll-profile/${p.employeeCode}`)}
+                          className="p-2 hover:bg-white rounded-xl shadow-sm border border-transparent hover:border-slate-200 text-slate-400 hover:text-indigo-600 transition-all active:scale-90"
+                          title="Quick View"
                         >
-                          View
+                          <MdVisibility size={18} />
                         </button>
-
                         <button
-                          className="text-green-600 hover:underline"
-                          onClick={() =>
-                            navigate(
-                              `/payroll-profile/edit/${p.employeeCode}`
-                            )
-                          }
+                          onClick={() => navigate(`/payroll-profile/edit/${p.employeeCode}`)}
+                          className="p-2 hover:bg-white rounded-xl shadow-sm border border-transparent hover:border-slate-200 text-slate-400 hover:text-emerald-600 transition-all active:scale-90"
+                          title="Edit Structure"
                         >
-                          Edit
+                          <MdEdit size={18} />
                         </button>
-
                         <button
-                          className="text-orange-600 hover:underline"
-                          onClick={() =>
-                            navigate(`/attendance/${p.employeeCode}`)
-                          }
+                          onClick={() => navigate(`/attendance/${p.employeeCode}`)}
+                          className="p-2 hover:bg-white rounded-xl shadow-sm border border-transparent hover:border-slate-200 text-slate-400 hover:text-amber-600 transition-all active:scale-90"
+                          title="Attendance History"
                         >
-                          Attendance
+                          <MdHistory size={18} />
                         </button>
-
                         <button
-                          className="text-red-600 hover:underline"
                           onClick={() => handleDelete(p.employeeCode)}
+                          className="p-2 hover:bg-white rounded-xl shadow-sm border border-transparent hover:border-slate-200 text-slate-400 hover:text-rose-600 transition-all active:scale-90"
+                          title="Archive Profile"
                         >
-                          Delete
+                          <MdDelete size={18} />
                         </button>
                       </div>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8" className="text-center p-5">
-                    No payroll profiles found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
-
       </div>
     </div>
   );
