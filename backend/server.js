@@ -64,10 +64,10 @@ app.use("/api/employee", require("./routes/employeeRoutes"));
 app.use("/api/organization", require("./routes/organizationRoutes"));
 app.use("/api/notification", require("./routes/notificationRoutes"));
 
-// ✅ MODULE 5: Attendance & Leave
+// MODULE 5: Attendance & Leave
 app.use("/api/attendance", attendanceRoutes);
 
-// ✅ MODULE 6: Payroll Processing (Preview / Approve / Lock)
+// MODULE 6: Payroll Processing (Preview / Approve / Lock)
 app.use("/api/payroll-run", payrollRunRoutes);
 
 // 🔹 Health check endpoint
@@ -81,7 +81,12 @@ app.get("/api/health", (req, res) => {
 
 // 🔹 Global error handler
 app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.stack);
+  if (err.code === 'ENOTFOUND' || err.message?.includes('getaddrinfo')) {
+    console.error("MongoDB DNS Error: Could not resolve cluster address.");
+    console.error("Check your internet connection or verify the MONGO_URI in .env");
+  } else {
+    console.error("Error:", err.stack);
+  }
   res.status(500).json({
     message: "Internal Server Error",
   });
@@ -90,5 +95,5 @@ app.use((err, req, res, next) => {
 // 🔹 Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

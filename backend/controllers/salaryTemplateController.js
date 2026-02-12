@@ -187,12 +187,18 @@ exports.calculateSalaryByProfile = async (req, res) => {
 
     return res.json({
       employeeCode: profile.employeeCode,
-      grossSalary,
+      templateName: template.name,
+      earnings: {
+        basic,
+        hra,
+        allowances,
+        grossSalary
+      },
       deductions: {
         pf,
         esi,
         tax,
-        totalDeductions
+        total: totalDeductions
       },
       netSalary
     });

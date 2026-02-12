@@ -40,7 +40,7 @@ export default function DashboardLayout() {
           {!collapsed && (
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">P</div>
-              <h3 className="font-bold text-lg text-white tracking-tight">Payroll Pro</h3>
+              <h3 className="font-bold text-lg text-white tracking-tight">Payroll</h3>
             </div>
           )}
           <button

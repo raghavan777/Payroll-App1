@@ -30,6 +30,7 @@ import SalaryPreview from "../pages/SalaryPreview";
 import TaxSlabForm from "../pages/TaxSlabForm";
 import TaxDeclarationForm from "../pages/TaxDeclarationForm";
 import SalaryTemplateForm from "../pages/salary/SalaryTemplateForm";
+import SalaryTemplateEdit from "../pages/SalaryTemplateEdit";
 
 export const appRoutes = [
     {
@@ -137,7 +138,7 @@ export const appRoutes = [
     {
         path: "/salary-template/edit/:id",
         name: "Edit Salary Template",
-        element: <SalaryTemplateForm />,
+        element: <SalaryTemplateEdit />,
         icon: "edit",
     },
     {

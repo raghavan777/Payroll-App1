@@ -111,19 +111,27 @@ export default function SalaryPreview() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <span className="text-sm font-bold text-slate-500">Base Compensation</span>
-                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">₹{earnings?.basic?.toLocaleString?.(2)}</span>
+                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">
+                    ₹{(earnings?.basic || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <span className="text-sm font-bold text-slate-500">Regional Housing (HRA)</span>
-                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">₹{earnings?.hra?.toLocaleString?.(2)}</span>
+                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">
+                    ₹{(earnings?.hra || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <span className="text-sm font-bold text-slate-500">Flexible Allowances</span>
-                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">₹{earnings?.allowances?.toLocaleString?.(2)}</span>
+                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">
+                    ₹{(earnings?.allowances || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
                 <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
                   <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Total Accrued</span>
-                  <span className="text-lg font-black text-emerald-600 font-mono tracking-tighter">₹{earnings?.grossSalary?.toLocaleString?.(2)}</span>
+                  <span className="text-lg font-black text-emerald-600 font-mono tracking-tighter">
+                    ₹{(earnings?.grossSalary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -140,19 +148,27 @@ export default function SalaryPreview() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <span className="text-sm font-bold text-slate-500">Provident Fund (PF)</span>
-                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">₹{deductions?.pf?.toLocaleString?.(2)}</span>
+                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">
+                    ₹{(deductions?.pf || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <span className="text-sm font-bold text-slate-500">State Insurance (ESI)</span>
-                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">₹{deductions?.esi?.toLocaleString?.(2)}</span>
+                  <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">
+                    ₹{(deductions?.esi || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <span className="text-sm font-bold text-slate-500">Withholding Tax</span>
-                  <span className="text-sm font-black text-rose-600 font-mono tracking-tighter">₹{deductions?.tax?.toLocaleString?.(2)}</span>
+                  <span className="text-sm font-black text-rose-600 font-mono tracking-tighter">
+                    ₹{(deductions?.tax || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
                 <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
                   <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Total Deducted</span>
-                  <span className="text-lg font-black text-rose-600 font-mono tracking-tighter">₹{deductions?.total?.toLocaleString?.(2)}</span>
+                  <span className="text-lg font-black text-rose-600 font-mono tracking-tighter">
+                    ₹{(deductions?.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -168,7 +184,9 @@ export default function SalaryPreview() {
               </div>
               <div>
                 <p className="text-xs font-black text-indigo-300 uppercase tracking-[0.2em] mb-1">Projected Net Disbursement</p>
-                <h3 className="text-4xl font-black font-mono tracking-tighter">₹{netSalary?.toLocaleString?.(2)}</h3>
+                <h3 className="text-4xl font-black font-mono tracking-tighter">
+                  ₹{(netSalary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </h3>
               </div>
             </div>
 

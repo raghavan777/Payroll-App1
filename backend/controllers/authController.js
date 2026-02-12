@@ -88,9 +88,6 @@ exports.login = async (req, res) => {
     // ✅ FIX 1: Assign permissions based on role
     const userPermissions = permissionsConfig[user.role] || [];
 
-    console.log("LOGIN ROLE:", user.role);
-    console.log("LOGIN PERMISSIONS:", userPermissions);
-
     // ✅ FIX 2: Put correct permissions & organizationId into JWT
     let employeeCode = null;
 
