@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import api from "../api/axios";
 import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 import {
   MdPublic,
   MdMap,
@@ -14,13 +15,21 @@ import {
 export default function TaxSlab() {
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm();
 
+  // 🔹 Fetch existing slabs to verify GET endpoint (optional but fixes 404 if some other code calls it)
+  useEffect(() => {
+    const fetchSlabs = async () => {
+      try {
+        await api.get("/api/statutory/tax-slab");
+      } catch (err) {
+        console.error("Failed to fetch tax slabs:", err);
+      }
+    };
+    fetchSlabs();
+  }, []);
+
   const onSubmit = async (data) => {
     try {
-      const token = localStorage.getItem("token");
-
-      await axios.post("http://localhost:5000/api/statutory/tax-slab", data, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post("/api/statutory/tax-slab", data);
 
       toast.success("Tax Regulation created successfully!");
       reset();
@@ -33,18 +42,18 @@ export default function TaxSlab() {
     <div className="space-y-8 max-w-2xl mx-auto">
       {/* Header */}
       <div className="text-center md:text-left">
-        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Define Tax Slab</h1>
-        <p className="text-slate-500 font-medium mt-1">Establish regional tax regulations and progressive slab structures.</p>
+        <h1 className="text-3xl font-black text-white tracking-tight">Define Tax Slab</h1>
+        <p className="text-slate-200 font-medium mt-1">Establish regional tax regulations and progressive slab structures.</p>
       </div>
 
-      <div className="bg-white rounded-[40px] border border-slate-200 shadow-sm overflow-hidden p-8 lg:p-10">
-        <div className="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
-          <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm">
+      <div className="light-glass-card overflow-hidden p-8 lg:p-10">
+        <div className="flex items-center gap-4 mb-10 pb-6 border-b border-white/10">
+          <div className="w-14 h-14 bg-white/10 text-indigo-300 rounded-2xl flex items-center justify-center shadow-sm">
             <MdAccountBalanceWallet size={28} />
           </div>
           <div>
-            <h2 className="text-xl font-black text-slate-800 leading-none mb-1">Regulation Details</h2>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Slab Configuration</p>
+            <h2 className="text-xl font-black text-white leading-none mb-1">Regulation Details</h2>
+            <p className="text-sm font-bold text-slate-300 uppercase tracking-widest">Slab Configuration</p>
           </div>
         </div>
 
@@ -106,7 +115,7 @@ export default function TaxSlab() {
 
             {/* Tax % */}
             <div className="col-span-1 md:col-span-2 space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Tax Percentage (%)</label>
+              <label className="text-xs font-black text-indigo-200 uppercase tracking-widest ml-1">Tax Percentage (%)</label>
               <div className="relative group">
                 <MdPercent className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-amber-500 transition-colors" size={20} />
                 <input

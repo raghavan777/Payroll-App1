@@ -13,6 +13,7 @@ import {
     MdSave
 } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
+import Dropdown from "../components/Dropdown";
 
 export default function Attendance() {
     const { employeeCode } = useParams();
@@ -110,79 +111,80 @@ export default function Attendance() {
             className="space-y-10 max-w-6xl mx-auto pb-16 font-inter"
         >
             {/* Header */}
-            <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white p-8 rounded-[40px] border border-slate-200 shadow-sm">
+            <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 relative z-10">
                 <div>
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 font-bold transition-all mb-4 group"
+                        className="flex items-center gap-2 text-slate-500 hover:text-indigo-400 font-black transition-all mb-6 group text-[10px] uppercase tracking-[0.3em]"
                     >
                         <MdArrowBack className="group-hover:-translate-x-1 transition-transform" />
-                        <span className="text-[10px] uppercase tracking-[0.3em]">Return to Workforce Roster</span>
+                        <span>Return to Workforce Roster</span>
                     </button>
-                    <h1 className="text-4xl font-black text-slate-800 tracking-tighter flex items-center gap-4">
-                        Personnel Activity <span className="text-indigo-600 bg-indigo-50 px-4 py-1 rounded-2xl">ID: {employeeCode}</span>
+                    <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none mb-3 uppercase">
+                        Personnel Activity
                     </h1>
+                    <p className="text-slate-400 font-medium italic text-sm tracking-wide">
+                        Institutional presence monitoring for identity: <span className="text-indigo-300 font-black tracking-widest uppercase">{employeeCode}</span>
+                    </p>
                 </div>
-                <div className="flex items-center gap-4">
-                    <div className="px-5 py-3 bg-emerald-50 rounded-2xl border border-emerald-100 shadow-sm flex items-center gap-3">
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                        <span className="text-[10px] font-black text-emerald-700 uppercase tracking-[0.2em]">Real-time Sync Active</span>
-                    </div>
+                <div className="flex items-center gap-4 bg-emerald-500/10 text-emerald-400 px-6 py-3 rounded-2xl border border-emerald-500/20 shadow-2xl backdrop-blur-md">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Real-time Sync Active</span>
                 </div>
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                {/* Entry Form */}
                 <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
-                    <div className="bg-white rounded-[48px] border border-slate-200 shadow-sm p-10 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full -mr-16 -mt-16 group-hover:bg-indigo-50 transition-colors duration-700"></div>
+                    <div className="premium-card p-10 relative overflow-hidden group border border-white/5">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -mr-16 -mt-16 group-hover:bg-indigo-500/10 transition-all duration-700 blur-2xl"></div>
 
                         <div className="relative z-10">
-                            <div className="flex items-center gap-4 pb-8 border-b border-slate-100 mb-10">
-                                <div className="w-14 h-14 bg-indigo-600 text-white rounded-[22px] flex items-center justify-center shadow-2xl shadow-indigo-600/20">
-                                    <MdEventAvailable size={28} />
+                            <div className="flex items-center gap-5 pb-8 border-b border-white/10 mb-10">
+                                <div className="w-16 h-16 bg-white/5 border border-white/10 text-indigo-400 shadow-inner rounded-[24px] flex items-center justify-center">
+                                    <MdEventAvailable size={32} />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-slate-800 tracking-tight leading-none mb-1.5">Activity Log</h3>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Manual Entry Protocol</p>
+                                    <h3 className="text-2xl font-black text-white tracking-tight leading-none mb-1.5">Activity Log</h3>
+                                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">Manual Entry Protocol</p>
                                 </div>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-8">
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Calendar Point</label>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Calendar Point</label>
                                     <div className="relative group/input">
-                                        <MdEventAvailable className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within/input:text-indigo-600 transition-colors" size={22} />
+                                        <MdEventAvailable className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within/input:text-indigo-400 transition-colors" size={24} />
                                         <input
                                             type="date"
                                             required
                                             value={date}
                                             onChange={(e) => setDate(e.target.value)}
-                                            className="w-full bg-slate-50/50 border border-slate-200 pl-14 pr-6 py-5 rounded-3xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-black text-slate-700"
+                                            className="w-full bg-white/5 border border-white/10 pl-16 pr-8 py-5 rounded-[22px] focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all font-black text-white text-xs tracking-widest uppercase shadow-inner"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Engagement Vector</label>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Engagement Vector</label>
                                     <div className="relative group/input">
-                                        <MdShield className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within/input:text-indigo-600 transition-colors" size={22} />
-                                        <select
+                                        <Dropdown
+                                            options={[
+                                                { value: "PRESENT", label: "PRESENT (Institutional)" },
+                                                { value: "HALF_DAY", label: "HALF DAY (Partial)" },
+                                                { value: "ABSENT", label: "ABSENT (Null)" }
+                                            ]}
                                             value={status}
                                             onChange={(e) => handleStatusChange(e.target.value)}
-                                            className="w-full bg-slate-50/50 border border-slate-200 pl-14 pr-6 py-5 rounded-3xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-black text-slate-700 appearance-none"
-                                        >
-                                            <option value="PRESENT">PRESENT (Institutional)</option>
-                                            <option value="HALF_DAY">HALF DAY (Partial)</option>
-                                            <option value="ABSENT">ABSENT (Null)</option>
-                                        </select>
+                                            icon={MdShield}
+                                            className="w-full"
+                                        />
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Measured Duration</label>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Measured Duration</label>
                                     <div className="relative group/input">
-                                        <MdAccessTime className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within/input:text-indigo-600 transition-colors" size={22} />
+                                        <MdAccessTime className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within/input:text-indigo-400 transition-colors" size={24} />
                                         <input
                                             type="number"
                                             min="0"
@@ -190,8 +192,9 @@ export default function Attendance() {
                                             value={hours}
                                             disabled={status !== "PRESENT"}
                                             onChange={(e) => setHours(e.target.value)}
-                                            className="w-full bg-slate-50/50 border border-slate-200 pl-14 pr-6 py-5 rounded-3xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-black text-slate-700 disabled:opacity-40"
+                                            className="w-full bg-white/5 border border-white/10 pl-16 pr-12 py-5 rounded-[22px] focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all font-black text-white text-base font-mono tracking-tighter disabled:opacity-20 shadow-inner"
                                         />
+                                        <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-600 uppercase">HR</span>
                                     </div>
                                 </div>
 
@@ -200,14 +203,15 @@ export default function Attendance() {
                                     whileTap={{ scale: 0.98 }}
                                     type="submit"
                                     disabled={submitting}
-                                    className="group w-full inline-flex items-center justify-center gap-4 bg-[#0f172a] hover:bg-slate-800 text-white font-black px-10 py-6 rounded-[32px] shadow-2xl shadow-slate-900/20 transition-all disabled:opacity-50"
+                                    className="group relative w-full inline-flex items-center justify-center gap-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black py-6 rounded-[28px] shadow-[0_20px_50px_rgba(79,70,229,0.4)] transition-all disabled:opacity-50 uppercase tracking-[0.3em] text-xs overflow-hidden"
                                 >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                                     {submitting ? (
                                         <span className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin"></span>
                                     ) : (
                                         <>
-                                            <MdSave size={26} className="group-hover:translate-y-[-2px] transition-transform" />
-                                            <span className="text-lg">Synchronize Entry</span>
+                                            <MdSave size={24} className="relative z-10 group-hover:scale-110 transition-transform" />
+                                            <span className="relative z-10">Synchronize Entry</span>
                                         </>
                                     )}
                                 </motion.button>
@@ -215,15 +219,11 @@ export default function Attendance() {
                         </div>
                     </div>
 
-                    <div className="bg-[#020617] rounded-[48px] p-10 text-white relative overflow-hidden group border border-white/5 shadow-2xl">
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
-                            transition={{ duration: 8, repeat: Infinity }}
-                            className="absolute top-0 right-0 w-48 h-48 bg-indigo-500 rounded-full -translate-y-1/2 translate-x-1/2 blur-[60px]"
-                        />
+                    <div className="bg-white/5 backdrop-blur-3xl rounded-[40px] p-10 text-white relative overflow-hidden group border border-white/10 shadow-2xl">
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-[80px]" />
                         <MdLayers className="text-indigo-400 mb-6" size={40} />
-                        <h4 className="text-xl font-black mb-3 tracking-tight">Institutional Audit</h4>
-                        <p className="text-slate-400 text-sm font-medium leading-relaxed opacity-80">
+                        <h4 className="text-2xl font-black mb-3 tracking-tighter uppercase">Institutional Audit</h4>
+                        <p className="text-slate-400 text-sm font-medium leading-relaxed italic">
                             All activity adjustments are cross-referenced with payroll sensors for statutory accuracy and digital ledger integrity.
                         </p>
                     </div>
@@ -231,70 +231,80 @@ export default function Attendance() {
 
                 {/* History Table */}
                 <motion.div variants={itemVariants} className="lg:col-span-2">
-                    <div className="bg-white rounded-[48px] border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
-                        <div className="p-10 border-b border-slate-100 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-[20px] flex items-center justify-center border border-emerald-100">
-                                    <MdHistory size={26} />
+                    <div className="premium-card p-10 overflow-hidden flex flex-col h-full border border-white/5">
+                        <div className="pb-10 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                            <div className="flex items-center gap-6">
+                                <div className="w-16 h-16 bg-white/5 text-indigo-400 rounded-[24px] flex items-center justify-center border border-white/10 shadow-inner">
+                                    <MdHistory size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-800 tracking-tight">Activity Ledger</h3>
+                                <div>
+                                    <h3 className="text-3xl font-black text-white tracking-tighter uppercase">Activity Ledger</h3>
+                                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">Institutional Verification Trail</p>
+                                </div>
                             </div>
-                            <span className="text-[10px] font-black text-slate-500 bg-slate-50 px-4 py-1.5 rounded-full uppercase tracking-[0.2em] border border-slate-100">{attendance.length} Total Records</span>
+                            <div className="px-6 py-3 bg-white/5 rounded-2xl border border-white/10 shadow-xl flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
+                                <span className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">{attendance.length} Synchronized Records</span>
+                            </div>
                         </div>
 
-                        <div className="flex-1 overflow-x-auto p-4">
+                        <div className="flex-1 overflow-x-auto py-8">
                             {loading ? (
                                 <div className="p-32 text-center">
-                                    <div className="w-16 h-16 border-4 border-indigo-600/10 border-t-indigo-600 rounded-full animate-spin mx-auto mb-6 shadow-2xl shadow-indigo-600/20"></div>
+                                    <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mx-auto mb-6"></div>
                                     <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[10px]">Syncing activity ledger...</p>
                                 </div>
                             ) : attendance.length === 0 ? (
                                 <div className="p-32 text-center">
-                                    <div className="w-24 h-24 bg-slate-50 rounded-[40px] flex items-center justify-center mx-auto mb-8 text-slate-200 shadow-inner">
-                                        <MdEventAvailable size={56} />
+                                    <div className="w-24 h-24 bg-white/5 rounded-[40px] flex items-center justify-center mx-auto mb-8 text-slate-600 border border-white/5 shadow-inner">
+                                        <MdEventAvailable size={56} className="opacity-40" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">Ledger Empty</h3>
-                                    <p className="text-slate-400 font-medium max-w-xs mx-auto">No engagement records have been synchronized for this identity rank.</p>
+                                    <h3 className="text-2xl font-black text-white mb-3 tracking-tight">Ledger Void</h3>
+                                    <p className="text-slate-400 text-xs font-medium uppercase tracking-widest leading-relaxed">No engagement records have been synchronized for this identity rank.</p>
                                 </div>
                             ) : (
-                                <table className="w-full text-left border-separate border-spacing-y-4">
+                                <table className="w-full text-left">
                                     <thead>
-                                        <tr className="text-slate-400">
-                                            <th className="px-8 py-2 text-[10px] font-black uppercase tracking-[0.3em]">Calendar Date</th>
-                                            <th className="px-8 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-center">Protocol Status</th>
-                                            <th className="px-8 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-right">Activity Scope</th>
+                                        <tr className="border-b border-white/5">
+                                            <th className="px-10 py-6 text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">Calendar Cycle</th>
+                                            <th className="px-10 py-6 text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] text-center">Protocol Status</th>
+                                            <th className="px-10 py-6 text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] text-right">Activity Scope</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-white/5">
                                         {attendance.map((a, idx) => (
-                                            <tr key={a._id} className="group">
-                                                <td className="px-8 py-6 bg-slate-50/50 group-hover:bg-indigo-50/30 first:rounded-l-[32px] transition-colors border-y border-l border-transparent group-hover:border-indigo-100">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 shadow-sm transition-all group-hover:scale-110">
-                                                            <MdEventAvailable size={18} />
+                                            <tr key={a._id} className="group hover:bg-white/5 transition-all">
+                                                <td className="px-10 py-8">
+                                                    <div className="flex items-center gap-6">
+                                                        <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 group-hover:text-indigo-400 shadow-inner transition-all group-hover:scale-110">
+                                                            <MdEventAvailable size={22} />
                                                         </div>
-                                                        <span className="font-black text-slate-800 text-lg tracking-tight">{new Date(a.date).toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                                        <div>
+                                                            <p className="font-black text-white text-base tracking-tight mb-1">{new Date(a.date).toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                                                            <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Digital Signature Valid</span>
+                                                        </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-8 py-6 bg-slate-50/50 group-hover:bg-indigo-50/30 group-hover:border-y border-transparent group-hover:border-indigo-100 text-center transition-colors">
-                                                    <span className={`inline-flex px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm ${a.status === 'PRESENT' ? 'bg-emerald-50 text-emerald-700 border-emerald-100 shadow-emerald-500/10' :
-                                                        a.status === 'HALF_DAY' ? 'bg-amber-50 text-amber-700 border-amber-100 shadow-amber-500/10' :
-                                                            'bg-rose-50 text-rose-700 border-rose-100 shadow-rose-500/10'
+                                                <td className="px-10 py-8 text-center">
+                                                    <span className={`inline-flex px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border shadow-2xl backdrop-blur-md ${a.status === 'PRESENT' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                                                        a.status === 'HALF_DAY' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                                            'bg-rose-500/10 text-rose-400 border-rose-500/20'
                                                         }`}>
                                                         {a.status?.replace("_", " ")}
                                                     </span>
                                                 </td>
-                                                <td className="px-8 py-6 bg-slate-50/50 group-hover:bg-indigo-50/30 last:rounded-r-[32px] transition-colors border-y border-r border-transparent group-hover:border-indigo-100 text-right">
-                                                    <div className="font-mono font-black text-slate-900 text-xl tracking-tighter">
-                                                        {a.hoursWorked} <span className="text-[10px] text-slate-400 uppercase tracking-widest ml-2 font-inter font-bold">HR</span>
+                                                <td className="px-10 py-8 text-right">
+                                                    <div className="flex flex-col items-end">
+                                                        <span className="font-black text-white text-2xl font-mono tracking-tighter leading-none mb-1">{a.hoursWorked}</span>
+                                                        <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Institutional Hours</span>
                                                     </div>
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
-                            )}
-                        </div>
+                            )
+                            }</div>
                     </div>
                 </motion.div>
             </div>

@@ -38,48 +38,53 @@ export default function PayslipList() {
     return (
         <div className="space-y-8 max-w-4xl mx-auto pb-12">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-black text-slate-800 tracking-tight">Earnings Archive</h1>
-                <p className="text-slate-500 font-medium mt-1">Access your historical payslips and digital financial statements.</p>
+            <div className="text-center md:text-left">
+                <h1 className="text-4xl font-black text-white tracking-tight leading-none mb-3">Earnings Archive</h1>
+                <p className="text-slate-300 font-medium italic text-sm tracking-wide">Historical institutional disbursement records and digital financial statements.</p>
             </div>
 
             {loading ? (
                 <div className="flex flex-col items-center justify-center min-h-[400px]">
-                    <div className="w-12 h-12 border-4 border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
-                    <p className="text-slate-500 font-bold tracking-tight">Retrieving earnings history...</p>
+                    <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mb-6"></div>
+                    <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[10px]">Retrieving earnings archive...</p>
                 </div>
             ) : payslips.length === 0 ? (
-                <div className="bg-white rounded-[40px] border border-slate-200 shadow-sm p-20 text-center">
-                    <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-300">
-                        <MdReceipt size={48} />
+                <div className="premium-card rounded-[44px] overflow-hidden p-24 text-center relative">
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                    <div className="w-24 h-24 bg-white/5 rounded-[32px] flex items-center justify-center mx-auto mb-8 text-slate-600 border border-white/10 shadow-inner">
+                        <MdReceipt size={56} className="opacity-40" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800 mb-2">No Records Found</h3>
-                    <p className="text-slate-500 max-w-xs mx-auto text-sm font-medium">Your payroll history will appear here once the first cycle is synchronized.</p>
+                    <h3 className="text-2xl font-black text-white mb-3 tracking-tight">Archive Empty</h3>
+                    <p className="text-slate-400 max-w-xs mx-auto text-xs font-medium uppercase tracking-widest leading-relaxed">Your payroll history will synchronize here once the first institutional cycle is finalized.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {payslips.map((p) => (
-                        <div key={p._id} className="bg-white rounded-[32px] border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
-                            <div className="p-8">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm">
-                                        <MdCalendarToday size={24} />
+                        <div key={p._id} className="premium-card rounded-[40px] hover:shadow-[0_25px_60px_rgba(79,70,229,0.3)] hover:-translate-y-2 transition-all duration-500 overflow-hidden group">
+                            <div className="p-10 relative">
+                                <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                                <div className="flex items-center justify-between mb-10">
+                                    <div className="w-16 h-16 bg-white/5 text-indigo-400 rounded-2xl flex items-center justify-center shadow-xl border border-white/10 group-hover:bg-indigo-500/10 group-hover:border-indigo-500/20 transition-all">
+                                        <MdCalendarToday size={32} />
                                     </div>
                                     <div className="flex flex-col items-end">
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Fiscal Period</span>
-                                        <span className="text-sm font-black text-slate-800">{p.payPeriod}</span>
+                                        <span className="text-[10px] font-black text-indigo-300/40 uppercase tracking-[0.2em] leading-none mb-2">Fiscal Period</span>
+                                        <span className="text-lg font-black text-white group-hover:text-indigo-300 transition-colors uppercase tracking-widest">{p.payPeriod}</span>
                                     </div>
                                 </div>
 
-                                <div className="space-y-4 mb-8">
+                                <div className="space-y-6 mb-10">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Net Compensation</span>
-                                        <span className="text-2xl font-black text-emerald-600 tracking-tight">₹{p.netSalary?.toLocaleString()}</span>
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Net Compensation</span>
+                                            <span className="text-7xl font-black text-white/5 absolute -left-8 bottom-0 select-none pointer-events-none tracking-tighter">₹</span>
+                                        </div>
+                                        <span className="text-3xl font-black text-emerald-400 tracking-tighter drop-shadow-[0_0_15px_rgba(52,211,153,0.3)] tabular-nums">₹{p.netSalary?.toLocaleString()}</span>
                                     </div>
-                                    <div className="h-px bg-slate-100"></div>
-                                    <div className="flex items-center gap-2">
-                                        <MdVerifiedUser className="text-indigo-400" size={14} />
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Digitally Certified</span>
+                                    <div className="h-px bg-white/5"></div>
+                                    <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/5 w-fit">
+                                        <MdVerifiedUser className="text-emerald-400 animate-pulse" size={16} />
+                                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Digitally Certified Protocol</span>
                                     </div>
                                 </div>
 
@@ -87,10 +92,11 @@ export default function PayslipList() {
                                     href={`http://localhost:5000${p.pdfUrl}`}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center justify-center gap-3 w-full bg-slate-900 group-hover:bg-indigo-600 text-white font-black px-6 py-4 rounded-2xl transition-all shadow-lg active:scale-95"
+                                    className="group/btn relative inline-flex items-center justify-center gap-4 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black px-8 py-5 rounded-[24px] transition-all shadow-[0_15px_40px_rgba(79,70,229,0.4)] active:scale-95 overflow-hidden uppercase tracking-[0.2em] text-xs"
                                 >
-                                    <MdDownload size={20} />
-                                    <span>Download Statement</span>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
+                                    <MdDownload size={22} className="relative z-10 group-hover/btn:translate-y-px transition-transform" />
+                                    <span className="relative z-10">Download Statement</span>
                                 </a>
                             </div>
                         </div>
@@ -98,10 +104,12 @@ export default function PayslipList() {
                 </div>
             )}
 
-            <div className="mt-10 p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-start gap-4">
-                <MdInfoOutline className="text-indigo-400 mt-1" size={20} />
-                <p className="text-[11px] font-bold text-slate-500 leading-relaxed italic">
-                    Digital payslips are generated using the institutional financial engine. For discrepancies in statutory deductions or base compensation, please contact the central HR node.
+            <div className="mt-12 p-8 bg-white/5 backdrop-blur-md rounded-[32px] border border-white/10 flex items-start gap-5 relative z-10 shadow-inner">
+                <div className="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 text-indigo-400 shadow-xl">
+                    <MdInfoOutline size={24} />
+                </div>
+                <p className="text-xs font-black text-slate-500 leading-relaxed italic uppercase tracking-widest opacity-80">
+                    Digital payslips are generated using the institutional financial engine. For discrepancies in statutory deductions or base compensation, please initiate a protocol review with the central HR node.
                 </p>
             </div>
         </div>

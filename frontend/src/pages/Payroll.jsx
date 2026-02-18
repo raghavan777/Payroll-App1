@@ -48,68 +48,69 @@ export default function Payroll() {
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-12">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-white rounded-[40px] border border-slate-200 shadow-sm p-8 lg:p-12">
+      <div className="relative overflow-hidden premium-card rounded-[40px] p-8 lg:p-12">
         {/* Decorative Background Elements */}
-        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-50 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative flex flex-col items-center text-center max-w-2xl mx-auto">
-          <div className="w-20 h-20 bg-indigo-600 text-white rounded-3xl flex items-center justify-center shadow-xl shadow-indigo-600/20 mb-8 animate-in zoom-in-50 duration-500">
-            <MdPayments size={40} />
+          <div className="w-24 h-24 bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-[32px] flex items-center justify-center shadow-2xl shadow-indigo-600/20 mb-10 animate-in zoom-in-50 duration-700 border border-white/20">
+            <MdPayments size={48} />
           </div>
 
-          <h1 className="text-4xl lg:text-5xl font-black text-slate-800 tracking-tight mb-4">Centralized Payroll Engine</h1>
-          <p className="text-lg text-slate-500 font-medium leading-relaxed mb-10">
-            Orchestrate enterprise-wide compensation cycles, automated statutory deductions, and high-fidelity payslip generation with a single directive.
+          <h1 className="text-5xl lg:text-6xl font-black text-white tracking-tighter mb-6 leading-[0.9]">Centralized Payroll Engine</h1>
+          <p className="text-xl text-slate-300 font-medium leading-relaxed mb-12">
+            Orchestrate enterprise-wide compensation cycles, automated statutory deductions, and high-fidelity payslip generation with a single protocol.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-10 text-left">
-            <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:bg-white hover:shadow-md transition-all">
-              <MdAutoGraph className="text-indigo-500 mb-3" size={24} />
-              <h4 className="font-black text-slate-800 text-sm mb-1 uppercase tracking-wider">Dynamic Math</h4>
-              <p className="text-slate-500 text-xs font-medium">Real-time computation of variable earnings and offsets.</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12 text-left">
+            <div className="p-6 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 group hover:bg-white/10 transition-all">
+              <MdAutoGraph className="text-indigo-400 mb-4" size={28} />
+              <h4 className="font-black text-white text-[10px] mb-2 uppercase tracking-[0.2em]">Dynamic Math</h4>
+              <p className="text-indigo-200 text-xs font-bold leading-relaxed">Real-time computation of variable earnings and offsets.</p>
             </div>
-            <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:bg-white hover:shadow-md transition-all">
-              <MdShield className="text-emerald-500 mb-3" size={24} />
-              <h4 className="font-black text-slate-800 text-sm mb-1 uppercase tracking-wider">Compliant</h4>
-              <p className="text-slate-500 text-xs font-medium">Auto-enforcement of regional tax governance policies.</p>
+            <div className="p-6 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 group hover:bg-white/10 transition-all">
+              <MdShield className="text-emerald-400 mb-4" size={28} />
+              <h4 className="font-black text-white text-[10px] mb-2 uppercase tracking-[0.2em]">Compliant</h4>
+              <p className="text-indigo-200 text-xs font-bold leading-relaxed">Auto-enforcement of regional tax governance policies.</p>
             </div>
-            <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:bg-white hover:shadow-md transition-all">
-              <MdReceipt className="text-amber-500 mb-3" size={24} />
-              <h4 className="font-black text-slate-800 text-sm mb-1 uppercase tracking-wider">Ledger Ready</h4>
-              <p className="text-slate-500 text-xs font-medium">Instant synchronization with historical financial records.</p>
+            <div className="p-6 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 group hover:bg-white/10 transition-all">
+              <MdReceipt className="text-amber-400 mb-4" size={28} />
+              <h4 className="font-black text-white text-[10px] mb-2 uppercase tracking-[0.2em]">Ledger Ready</h4>
+              <p className="text-indigo-200 text-xs font-bold leading-relaxed">Instant synchronization with historical financial records.</p>
             </div>
           </div>
 
           {status && (
             <div
-              className={`w-full p-5 mb-8 rounded-[24px] flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-300 border ${status.type === "success"
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                  : "bg-rose-50 text-rose-700 border-rose-100"
+              className={`w-full p-6 mb-10 rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500 border backdrop-blur-xl ${status.type === "success"
+                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                : "bg-rose-500/10 text-rose-400 border-rose-500/20"
                 }`}
             >
-              {status.type === "success" ? <MdCheckCircle size={28} /> : <MdError size={28} />}
-              <span className="font-bold text-sm">{status.msg}</span>
+              {status.type === "success" ? <MdCheckCircle size={32} /> : <MdError size={32} />}
+              <span className="font-black uppercase tracking-widest text-xs">{status.msg}</span>
             </div>
           )}
 
           <button
             onClick={runPayroll}
             disabled={isRunning}
-            className={`group relative inline-flex items-center gap-3 px-12 py-5 rounded-[28px] text-lg font-black tracking-tight transition-all active:scale-95 shadow-2xl shadow-indigo-600/20 disabled:opacity-50 ${isRunning
-                ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-500 text-white"
+            className={`group relative inline-flex items-center gap-3 px-16 py-6 rounded-full text-lg font-black tracking-widest uppercase transition-all active:scale-95 shadow-[0_20px_50px_rgba(79,70,229,0.3)] disabled:opacity-50 overflow-hidden ${isRunning
+              ? "bg-white/10 text-slate-500 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-500 text-white"
               }`}
           >
+            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             {isRunning ? (
               <>
                 <span className="w-6 h-6 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></span>
-                <span>Synchronizing Data...</span>
+                <span className="relative z-10 text-xs">Synchronizing Protocol...</span>
               </>
             ) : (
               <>
-                <MdPlayCircleFilled size={28} />
-                <span>Execute Unified Cycle</span>
+                <MdPlayCircleFilled size={28} className="relative z-10" />
+                <span className="relative z-10 text-xs">Execute Unified Cycle</span>
               </>
             )}
           </button>
@@ -117,9 +118,9 @@ export default function Payroll() {
       </div>
 
       {/* Institutional Note */}
-      <div className="flex items-center justify-center gap-2 text-slate-400">
-        <MdShield size={16} />
-        <p className="text-[10px] font-black uppercase tracking-[0.2em]">Validated Financial Environment • ISO 27001 Protocol</p>
+      <div className="flex items-center justify-center gap-2 text-slate-500">
+        <MdShield size={16} className="text-indigo-400" />
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Validated Financial Environment • Protocol AES-256 Verified</p>
       </div>
     </div>
   );

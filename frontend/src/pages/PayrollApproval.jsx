@@ -9,6 +9,7 @@ import {
     MdInfoOutline,
     MdPayments
 } from "react-icons/md";
+import Dropdown from "../components/Dropdown";
 
 export default function PayrollApproval() {
     const [payrolls, setPayrolls] = useState([]);
@@ -55,78 +56,76 @@ export default function PayrollApproval() {
     return (
         <div className="space-y-8 max-w-2xl mx-auto pb-12">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-black text-slate-800 tracking-tight text-center md:text-left">Payroll Authorization</h1>
-                <p className="text-slate-500 font-medium mt-1 text-center md:text-left">Final institutional sign-off for disbursement cycle ledger entries.</p>
+            <div className="text-center md:text-left">
+                <h1 className="text-4xl font-black text-white tracking-tight">Institutional Authorization</h1>
+                <p className="text-slate-300 font-medium mt-2 italic text-sm">Final institutional sign-off for disbursement cycle ledger entries.</p>
             </div>
 
-            <div className="bg-white rounded-[40px] border border-slate-200 shadow-sm overflow-hidden p-8 lg:p-10">
-                <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-100">
-                    <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm">
-                        <MdGavel size={28} />
+            <div className="premium-card rounded-[40px] overflow-hidden p-8 lg:p-10 relative">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                <div className="flex items-center gap-5 mb-10 pb-8 border-b border-white/10 relative z-10">
+                    <div className="w-16 h-16 bg-white/5 backdrop-blur-md text-indigo-400 rounded-3xl flex items-center justify-center border border-white/10 shadow-2xl">
+                        <MdGavel size={32} />
                     </div>
                     <div>
-                        <h2 className="text-xl font-black text-slate-800 leading-none mb-1">Approval Protocol</h2>
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Verify & Authorize</p>
+                        <h2 className="text-2xl font-black text-white leading-none mb-2">Approval Protocol</h2>
+                        <p className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">Verify & Authorize</p>
                     </div>
                 </div>
 
                 <div className="space-y-8">
                     {/* Select Payroll */}
-                    <div className="space-y-4">
-                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 text-center block md:text-left">Target Ledger Entry</label>
-                        <div className="relative">
-                            <select
+                    <div className="space-y-4 relative z-10">
+                        <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em] ml-1 text-center block md:text-left">Target Ledger Entry</label>
+                        <div className="relative group">
+                            <Dropdown
+                                options={payrolls.map(p => ({
+                                    value: p.payrollId,
+                                    label: `${p.employeeCode} | ${p.employeeName} — Net: ₹${p.netPay?.toLocaleString()}`
+                                }))}
                                 value={selectedPayrollId}
                                 onChange={(e) => setSelectedPayrollId(e.target.value)}
-                                className="w-full bg-slate-50 border border-slate-200 px-6 py-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none font-black text-slate-700 text-sm"
-                            >
-                                <option value="">Choose Pending Payroll Entry...</option>
-                                {payrolls.map((p) => (
-                                    <option key={p.payrollId} value={p.payrollId}>
-                                        {p.employeeCode} | {p.employeeName} — Net: ₹{p.netPay?.toLocaleString()}
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-                                <MdLayers size={20} />
-                            </div>
+                                placeholder="Choose Pending Payroll Entry..."
+                                icon={MdLayers}
+                                className="w-full"
+                            />
                         </div>
                     </div>
 
                     {/* Summary Card for Selection */}
                     {selectedPayroll && (
-                        <div className="p-6 bg-indigo-50 rounded-3xl border border-indigo-100 flex flex-col md:flex-row items-center justify-between gap-6 animate-in zoom-in-95 duration-300">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-indigo-600 shadow-sm">
-                                    <MdPayments size={24} />
+                        <div className="p-8 bg-indigo-500/10 backdrop-blur-md rounded-[32px] border border-indigo-500/20 flex flex-col md:flex-row items-center justify-between gap-8 animate-in zoom-in-95 duration-500 relative z-10 shadow-2xl">
+                            <div className="flex items-center gap-5">
+                                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-indigo-400 border border-white/10 shadow-inner">
+                                    <MdPayments size={28} />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-1">Projected Disbursement</p>
-                                    <h4 className="text-2xl font-black text-indigo-900 font-mono tracking-tighter">₹{selectedPayroll.netPay?.toLocaleString()}</h4>
+                                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em] mb-2 leading-none">Projected Disbursement</p>
+                                    <h4 className="text-3xl font-black text-white font-mono tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(79,70,229,0.3)]">₹{selectedPayroll.netPay?.toLocaleString()}</h4>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-700 rounded-xl text-[10px] font-black uppercase tracking-widest">
-                                <MdCheckCircle size={16} />
-                                <span>Computational Match</span>
+                            <div className="flex items-center gap-2 px-6 py-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 text-[10px] font-black uppercase tracking-[0.2em] shadow-lg">
+                                <MdCheckCircle className="animate-pulse" size={18} />
+                                <span>Computation Protocol Match</span>
                             </div>
                         </div>
                     )}
 
                     {!selectedPayroll && !loading && payrolls.length === 0 && (
-                        <div className="p-12 text-center bg-slate-50 rounded-[32px] border border-dashed border-slate-200">
-                            <MdInfoOutline className="mx-auto text-slate-300 mb-4" size={48} />
-                            <h3 className="text-lg font-black text-slate-800 mb-1">Queue Empty</h3>
-                            <p className="text-slate-500 font-medium text-sm">No pending payroll entries require authorization at this time.</p>
+                        <div className="p-16 text-center bg-white/5 rounded-[40px] border border-dashed border-white/10 relative z-10">
+                            <MdInfoOutline className="mx-auto text-slate-600 mb-6 opacity-40" size={56} />
+                            <h3 className="text-2xl font-black text-white mb-2 tracking-tight">Queue Exhausted</h3>
+                            <p className="text-slate-400 font-medium text-xs uppercase tracking-widest leading-relaxed">No pending payroll entries require authorization at this juncture.</p>
                         </div>
                     )}
 
-                    <div className="pt-8 border-t border-slate-100">
+                    <div className="pt-10 border-t border-white/10 relative z-10">
                         <button
                             onClick={handleApprove}
                             disabled={!selectedPayrollId || isSubmitting}
-                            className="group relative w-full inline-flex items-center justify-center gap-3 px-12 py-5 rounded-[28px] text-lg font-black tracking-tight transition-all active:scale-95 shadow-2xl shadow-rose-600/20 disabled:opacity-50 bg-rose-600 hover:bg-rose-500 text-white"
+                            className="group relative w-full inline-flex items-center justify-center gap-4 px-12 py-6 rounded-[32px] text-sm font-black tracking-[0.2em] uppercase transition-all active:scale-95 shadow-2xl shadow-rose-600/30 disabled:opacity-50 bg-rose-600 hover:bg-rose-500 text-white overflow-hidden"
                         >
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                             {isSubmitting ? (
                                 <>
                                     <span className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin"></span>
@@ -134,15 +133,20 @@ export default function PayrollApproval() {
                                 </>
                             ) : (
                                 <>
-                                    <MdGavel size={24} className="group-hover:rotate-12 transition-transform" />
-                                    <span>Authorize Entry</span>
+                                    <MdGavel size={28} className="group-hover:rotate-12 transition-transform relative z-10" />
+                                    <span className="relative z-10">Confirm Authorization</span>
                                 </>
                             )}
                         </button>
-                        <p className="text-center mt-6 flex items-center justify-center gap-2 text-slate-400">
-                            <MdShield size={14} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Irreversible institutional directive upon signature</span>
-                        </p>
+                        <div className="mt-8 flex flex-col items-center gap-3">
+                            <div className="flex items-center justify-center gap-2 text-rose-400 animate-pulse">
+                                <MdShield size={18} />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Irreversible Institutional Directive</span>
+                            </div>
+                            <p className="text-[9px] text-slate-500 text-center max-w-xs font-medium uppercase tracking-widest italic">
+                                Signature upon this entry will recalibrate permanent disbursement records and trigger liquidation sequences.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

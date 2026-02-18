@@ -14,6 +14,7 @@ import {
   MdVerifiedUser
 } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
+import AtmosphericBackground from "../components/AtmosphericBackground";
 
 export default function RegisterOrg() {
   const navigate = useNavigate();
@@ -51,28 +52,9 @@ export default function RegisterOrg() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#020617] relative overflow-hidden py-12 px-4 font-inter">
-      {/* Cinematic Background */}
-      <div className="absolute inset-0">
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            x: [0, -50, 0],
-            y: [0, 40, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 rounded-full blur-[120px]"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            x: [0, 40, 0],
-            y: [0, -30, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-emerald-600/10 rounded-full blur-[120px]"
-        />
-      </div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-12 px-4 font-inter">
+      {/* UNIFIED ATMOSPHERIC BACKGROUND */}
+      <AtmosphericBackground />
 
       <motion.div
         initial="hidden"
@@ -80,17 +62,24 @@ export default function RegisterOrg() {
         variants={containerVariants}
         className="w-full max-w-[600px] z-10"
       >
-        <motion.div variants={itemVariants} className="text-center mb-12">
+        <motion.div variants={itemVariants} className="text-center mb-12 relative">
           <motion.div
-            whileHover={{ scale: 1.05, rotate: -5 }}
-            className="inline-flex items-center justify-center w-24 h-24 bg-indigo-600 rounded-[32px] shadow-2xl shadow-indigo-500/40 mb-8 border border-white/10"
+            whileHover={{ scale: 1.05, rotate: -5, boxShadow: "0 25px 50px -12px rgba(79, 70, 229, 0.5)" }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-[32px] shadow-2xl shadow-indigo-500/40 mb-8 border border-white/10 relative z-10"
           >
-            <MdBusiness className="text-white text-5xl" />
+            <MdBusiness className="text-white text-5xl drop-shadow-lg" />
+            <div className="absolute inset-0 bg-white/20 rounded-[32px] blur-lg -z-10 opacity-50"></div>
           </motion.div>
-          <h1 className="text-5xl lg:text-6xl font-black text-white tracking-tighter mb-4 leading-tight text-gradient">
+          <motion.h1
+            className="text-5xl lg:text-6xl font-black text-white tracking-tighter mb-4 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-200 to-indigo-400 drop-shadow-sm"
+            animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+            style={{ backgroundSize: "200% auto" }}
+          >
             Institutional Onboarding
-          </h1>
-          <p className="text-slate-400 text-lg font-medium opacity-80 uppercase tracking-[0.3em] text-[12px]">
+          </motion.h1>
+          <p className="text-indigo-200 text-lg font-medium opacity-90 uppercase tracking-[0.3em] text-[12px] drop-shadow-md">
             Establish Digital Financial Infrastructure
           </p>
         </motion.div>
@@ -98,8 +87,11 @@ export default function RegisterOrg() {
         <motion.form
           variants={itemVariants}
           onSubmit={handleSubmit(onSubmit)}
-          className="glass-morphic border border-white/10 p-8 lg:p-14 space-y-10 rounded-[56px]"
+          className="glass-morphic border border-white/10 p-8 lg:p-14 space-y-10 rounded-[56px] shadow-[0_40px_100px_-15px_rgba(0,0,0,0.5)] backdrop-blur-3xl relative overflow-hidden"
         >
+          {/* Shine Effect */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+          <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
           {/* Section: Organization Details */}
           <motion.div variants={itemVariants} className="space-y-6">
             <div className="flex items-center gap-3 mb-4">

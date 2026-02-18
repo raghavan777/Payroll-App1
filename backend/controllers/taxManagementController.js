@@ -374,6 +374,7 @@ exports.getTaxProjection = async (req, res) => {
 };
 
 // GET /api/tax/download/:id (EMPLOYEE)
+// GET /api/tax/download/:id (EMPLOYEE)
 exports.downloadTaxStatement = async (req, res) => {
   try {
     const { id } = req.params;
@@ -395,43 +396,56 @@ exports.downloadTaxStatement = async (req, res) => {
     res.setHeader("Content-Disposition", `attachment; filename="${pdfFileName}"`);
 
     const doc = new PDFDocument({ margin: 50, size: "A4" });
+    const PDFService = require("../services/pdfService");
+    const pdfService = new PDFService(doc);
+
     doc.pipe(res);
 
-    doc.fontSize(20).text("Tax Statement", { align: "center" });
-    doc.moveDown();
+    // 1. Header
+    pdfService.drawHeader("TAX STATEMENT", `FY ${declaration.financialYear}`);
 
-    doc.fontSize(12).text(`Employee: ${declaration.employeeId?.name || "-"}`);
-    doc.text(`Employee Code: ${declaration.employeeId?.employeeCode || "-"}`);
-    doc.text(`Financial Year: ${declaration.financialYear}`);
-    doc.text(`Regime: ${declaration.selectedRegime.toUpperCase()}`);
-    doc.moveDown();
+    // 2. Entity Details
+    pdfService.drawEntityDetails(
+      {
+        title: "EMPLOYEE IDENTIFICATION",
+        items: [
+          { value: declaration.employeeId?.name || "-", subValue: declaration.employeeId?.employeeCode || "-" }
+        ]
+      },
+      {
+        title: "PROTOCOL PARAMETERS",
+        items: [
+          { label: "Regime", value: declaration.selectedRegime.toUpperCase() },
+          { label: "Generated", value: new Date().toLocaleDateString() }
+        ]
+      }
+    );
 
-    doc.fontSize(13).text("Tax Summary");
-    doc.fontSize(11).text(`Total Income: ${toNumber(declaration.totalIncome).toFixed(2)}`);
-    doc.fontSize(11).text(`Investments: ${toNumber(declaration.investments).toFixed(2)}`);
-    doc.fontSize(11).text(`Taxable Income: ${toNumber(declaration.taxableIncome).toFixed(2)}`);
-    doc
-      .fontSize(12)
-      .text(`Calculated Tax: ${toNumber(declaration.calculatedTax).toFixed(2)}`, {
-        underline: true,
-      });
-    doc.moveDown();
+    // 3. Computation Summary
+    const summaryRows = [
+      { label: "Gross Annual Income", value: declaration.totalIncome },
+      { label: "Investments & Exemptions", value: declaration.investments },
+      { label: "Net Taxable Income", value: declaration.taxableIncome },
+      { label: "CALCULATED INCOME TAX", value: declaration.calculatedTax, isTotal: true }
+    ];
+    pdfService.drawSummaryTable("COMPUTATION SUMMARY", summaryRows, 200);
 
-    doc.fontSize(13).text("Uploaded Proofs");
+    doc.moveDown(8);
+
+    // 4. Verification Logs (Proofs)
+    const proofY = doc.y;
+    pdfService.drawSectionHeader("VERIFICATION LOGS", proofY);
+
     if (!declaration.proofFiles || declaration.proofFiles.length === 0) {
-      doc.fontSize(11).text("No proofs uploaded");
+      doc.fillColor("#475569").fontSize(10).font("Helvetica-Oblique").text("No physical proofs attached to this protocol.", 50, proofY + 15);
     } else {
       declaration.proofFiles.forEach((file, idx) => {
-        doc.fontSize(11).text(`${idx + 1}. ${file.filename}`);
+        doc.fillColor("#475569").fontSize(10).font("Helvetica").text(`[PROTOCOL ATTACHMENT ${idx + 1}] ${file.filename}`, 50, proofY + 15 + (idx * 15));
       });
     }
 
-    doc.moveDown();
-    doc
-      .fontSize(10)
-      .fillColor("gray")
-      .text(`Generated on ${new Date().toLocaleString()}`);
-    doc.fillColor("black");
+    // 5. Footer
+    pdfService.drawFooter(declaration._id);
 
     doc.end();
   } catch (error) {

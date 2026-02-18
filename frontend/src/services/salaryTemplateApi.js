@@ -1,24 +1,16 @@
-import axios from "axios";
-
-const API = "http://localhost:5000/api/salary-template";
-
-const authHeader = () => ({
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-});
+import api from "../api/axios";
 
 export const getSalaryTemplates = () =>
-  axios.get(API, authHeader());
+  api.get("/api/salary-template");
 
 export const getSalaryTemplate = (id) =>
-  axios.get(`${API}/${id}`, authHeader());
+  api.get(`/api/salary-template/${id}`);
 
 export const createSalaryTemplate = (data) =>
-  axios.post(API, data, authHeader());
+  api.post("/api/salary-template", data);
 
 export const updateSalaryTemplate = (id, data) =>
-  axios.put(`${API}/${id}`, data, authHeader());
+  api.put(`/api/salary-template/${id}`, data);
 
 export const deleteSalaryTemplate = (id) =>
-  axios.delete(`${API}/${id}`, authHeader());
+  api.delete(`/api/salary-template/${id}`);

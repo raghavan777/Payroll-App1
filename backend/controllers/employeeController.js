@@ -1,6 +1,8 @@
 const Employee = require("../models/Employee");
 const User = require("../models/User");
 const Payslip = require("../models/Payslip");
+const { logAction } = require("./auditController");
+const { createNotification } = require("./notificationController");
 
 /* =====================================================
    GENERATE UNIQUE EMPLOYEE CODE (ORG SAFE)
@@ -62,6 +64,24 @@ exports.createEmployee = async (req, res) => {
       name,
       email: normalizedEmail,
       organizationId: req.user.organizationId,
+    });
+
+    /* ================= AUDIT & NOTIFICATION ================= */
+    await logAction({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      action: "EMPLOYEE_CREATED",
+      module: "EMPLOYEE",
+      details: { name, email, employeeCode },
+      req
+    });
+
+    await createNotification({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      title: "New Employee Added",
+      message: `${name} (${employeeCode}) has been added to the organization.`,
+      type: "SYSTEM",
     });
 
     return res.status(201).json({
@@ -136,6 +156,24 @@ exports.deleteEmployee = async (req, res) => {
     if (employee.userId) {
       await User.findByIdAndDelete(employee.userId);
     }
+
+    /* ================= AUDIT & NOTIFICATION ================= */
+    await logAction({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      action: "EMPLOYEE_DELETED",
+      module: "EMPLOYEE",
+      details: { employeeCode: req.params.employeeCode, name: employee.name },
+      req
+    });
+
+    await createNotification({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      title: "Employee Removed",
+      message: `${employee.name} (${req.params.employeeCode}) has been removed.`,
+      type: "SYSTEM",
+    });
 
     return res.json({
       success: true,

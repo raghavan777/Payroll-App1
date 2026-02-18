@@ -3,10 +3,11 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { getPayrollProfile, updatePayrollProfile } from "../services/payrollApi";
 import { motion } from "framer-motion";
 import {
-  FiArrowLeft, FiSave, FiCreditCard, FiDollarSign,
-  FiActivity, FiBriefcase, FiShield
-} from "react-icons/fi";
+  MdArrowBack, MdSave, MdCreditCard, MdAttachMoney,
+  MdTrendingUp, MdWork, MdShield, MdFingerprint
+} from "react-icons/md";
 import { toast } from "react-hot-toast";
+import Dropdown from "../components/Dropdown";
 
 const PayrollProfileEdit = () => {
   const { employeeCode } = useParams();
@@ -71,44 +72,46 @@ const PayrollProfileEdit = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
       </div>
     );
   }
 
-  const inputClasses = "w-full border border-slate-200 bg-slate-50 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none";
-  const labelClasses = "block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide";
+  const inputClasses = "w-full border border-white/10 bg-white/5 p-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-white font-bold placeholder:text-slate-500";
+  const labelClasses = "block text-[10px] font-black text-indigo-300 mb-3 uppercase tracking-[0.2em] ml-1";
 
   return (
-    <div className="p-4 md:p-8 bg-[#f8fafc] min-h-screen">
+    <div className="p-4 md:p-8 min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-4xl mx-auto"
       >
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Edit Payroll Profile</h2>
-            <p className="text-slate-500 mt-1 uppercase tracking-widest text-xs font-bold">
-              Employee Code: <span className="text-indigo-600 font-mono">{employeeCode}</span>
+            <h2 className="text-4xl font-black text-white tracking-tight">Modify Framework</h2>
+            <p className="text-slate-400 mt-2 uppercase tracking-widest text-[10px] font-black flex items-center gap-2">
+              <MdFingerprint className="text-indigo-400" size={14} />
+              Protocol Signature: <span className="text-indigo-300 font-mono text-xs">{employeeCode}</span>
             </p>
           </div>
           <Link
             to={`/payroll-profile/${employeeCode}`}
-            className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-colors bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200"
+            className="flex items-center gap-2 text-white hover:text-indigo-300 transition-all bg-white/5 px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/20 active:scale-95 shadow-xl font-bold uppercase tracking-widest text-[10px]"
           >
-            <FiArrowLeft /> Cancel
+            <MdArrowBack size={18} /> Revert Changes
           </Link>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Salary Components Section */}
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
-                <FiDollarSign size={20} />
+          <div className="premium-card p-8 rounded-[32px] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 bg-indigo-500/10 text-indigo-300 rounded-xl border border-indigo-500/20">
+                <MdAttachMoney size={24} />
               </div>
-              <h3 className="text-xl font-bold text-slate-900">Salary Components</h3>
+              <h3 className="text-xl font-black text-white tracking-tight">Salary Core Architecture</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -150,12 +153,12 @@ const PayrollProfileEdit = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Bank Details Section */}
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
-                  <FiCreditCard size={20} />
+            <div className="premium-card p-8 rounded-[32px]">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-3 bg-blue-500/10 text-blue-300 rounded-xl border border-blue-500/20">
+                  <MdCreditCard size={24} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">Bank Details</h3>
+                <h3 className="text-xl font-black text-white tracking-tight">Remittance Protocol</h3>
               </div>
 
               <div className="space-y-6">
@@ -193,43 +196,44 @@ const PayrollProfileEdit = () => {
             </div>
 
             {/* Compliance & Tax Section */}
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between">
+            <div className="premium-card p-8 rounded-[32px] flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-                    <FiShield size={20} />
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-3 bg-emerald-500/10 text-emerald-300 rounded-xl border border-emerald-500/20">
+                    <MdShield size={24} />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900">Tax Settings</h3>
+                  <h3 className="text-xl font-black text-white tracking-tight">Statutory Logic</h3>
                 </div>
 
                 <div>
                   <label className={labelClasses}>Tax Regime</label>
-                  <select
-                    name="taxRegime"
+                  <Dropdown
+                    options={[
+                      { value: "Old", label: "Old Regime (Standard Legacy)" },
+                      { value: "New", label: "New Regime (Accelerated Protocol)" }
+                    ]}
                     value={form.taxRegime}
-                    onChange={handleChange}
-                    className={inputClasses}
-                  >
-                    <option value="Old">Old Regime (Standard)</option>
-                    <option value="New">New Regime (Default)</option>
-                  </select>
+                    onChange={(e) => handleChange({ target: { name: "taxRegime", value: e.target.value } })}
+                    className="w-full"
+                  />
                 </div>
               </div>
 
-              <div className="mt-12 bg-slate-50 p-6 rounded-2xl border border-slate-200 border-dashed">
-                <p className="text-sm text-slate-500 italic">
-                  Note: Updating these values will affect the next payroll run for this employee. Please verify account details before saving.
+              <div className="mt-12 bg-indigo-500/5 p-6 rounded-2xl border border-indigo-500/10 border-dashed">
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
+                  Notice: Modification of these parameters will recalibrate the subsequent payroll cycle for this entity. Verify account integrity prior to authentication.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-4">
+          <div className="flex justify-end gap-5">
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-12 rounded-2xl shadow-lg shadow-indigo-100 transition-all active:scale-95"
+              className="group relative flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black py-5 px-12 rounded-2xl shadow-2xl shadow-indigo-600/20 active:scale-95 transition-all overflow-hidden uppercase tracking-[0.2em] text-xs"
             >
-              <FiSave /> Update Profile
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <MdSave size={20} /> Commit Updates
             </button>
           </div>
         </form>

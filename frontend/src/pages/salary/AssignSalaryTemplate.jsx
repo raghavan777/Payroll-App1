@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getPayrollProfiles } from "../../services/payrollApi";
 import { getSalaryTemplates, assignSalaryTemplate } from "../../services/salaryAPI";
 import { toast } from "react-hot-toast";
+import Dropdown from "../../components/Dropdown";
 
 export default function AssignSalaryTemplate() {
   const [profiles, setProfiles] = useState([]);
@@ -45,32 +46,22 @@ export default function AssignSalaryTemplate() {
         <h2 className="text-xl font-semibold mb-4">Assign Salary Template</h2>
 
         <label className="block mb-2">Select Payroll Profile:</label>
-        <select
-          className="border p-2 rounded w-full mb-4"
+        <Dropdown
+          options={profiles.map(p => ({ value: p._id, label: p.employeeCode }))}
           value={selectedProfile}
           onChange={(e) => setSelectedProfile(e.target.value)}
-        >
-          <option value="">-- Select Profile --</option>
-          {profiles.map((p) => (
-            <option key={p._id} value={p._id}>
-              {p.employeeCode}
-            </option>
-          ))}
-        </select>
+          placeholder="-- Select Profile --"
+          className="mb-4"
+        />
 
         <label className="block mb-2">Select Salary Template:</label>
-        <select
-          className="border p-2 rounded w-full mb-4"
+        <Dropdown
+          options={templates.map(t => ({ value: t._id, label: t.name }))}
           value={selectedTemplate}
           onChange={(e) => setSelectedTemplate(e.target.value)}
-        >
-          <option value="">-- Select Template --</option>
-          {templates.map((t) => (
-            <option key={t._id} value={t._id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
+          placeholder="-- Select Template --"
+          className="mb-4"
+        />
 
         <button
           className="bg-indigo-600 text-white py-2 px-4 rounded"

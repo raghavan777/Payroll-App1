@@ -1,9 +1,12 @@
 // 🔴 MUST be the first line
 require("dotenv").config();
 
-const express = require("express");
+const express = require("express"); // Restart trigger
+
 const cors = require("cors");
 const path = require("path");
+const compression = require("compression");
+const helmet = require("helmet");
 const connectDB = require("./config/db");
 
 // 🔹 Route imports
@@ -38,6 +41,15 @@ connectDB();
 const app = express();
 
 // 🔹 Global middlewares
+// Enable gzip compression for all responses
+app.use(compression());
+
+// Security headers with helmet
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP to avoid conflicts with frontend
+  crossOriginEmbedderPolicy: false
+}));
+
 app.use(cors({
   origin: "http://localhost:5173", // 👈 EXACT frontend URL
   credentials: true               // 👈 REQUIRED

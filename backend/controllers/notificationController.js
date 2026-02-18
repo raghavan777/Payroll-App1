@@ -29,6 +29,7 @@ exports.getMyNotifications = async (req, res) => {
 
         res.json(notifications);
     } catch (err) {
+        console.error("GET NOTIFICATIONS ERROR:", err);
         res.status(500).json({ message: "Failed to load notifications" });
     }
 };
@@ -53,6 +54,26 @@ exports.markAsRead = async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ message: "Failed to mark as read" });
+    }
+};
+
+/* ===============================
+   MARK ALL AS READ
+=============================== */
+exports.markAllAsRead = async (req, res) => {
+    try {
+        await Notification.updateMany(
+            {
+                userId: req.user.id,
+                organizationId: req.user.organizationId,
+                read: false,
+            },
+            { read: true }
+        );
+
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to mark all as read" });
     }
 };
 

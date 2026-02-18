@@ -29,7 +29,10 @@ const taxSlabSchema = new mongoose.Schema({
   taxPercentage: { type: Number },
 }, { timestamps: true });
 
-taxSlabSchema.index({ regime: 1, financialYear: 1 }, { unique: true });
+taxSlabSchema.index(
+  { regime: 1, financialYear: 1 },
+  { unique: true, partialFilterExpression: { financialYear: { $ne: "LEGACY" } } }
+);
 
 // Prevent OverwriteModelError
 module.exports = mongoose.models.TaxSlab || mongoose.model("TaxSlab", taxSlabSchema);

@@ -27,12 +27,19 @@ const statutoryConfigSchema = new mongoose.Schema(
     professionalTax: {
       type: Number,
       default: 0
+    },
+    isActive: {
+      type: Boolean,
+      default: true
     }
   },
   {
     timestamps: true
   }
 );
+
+// Prevent duplicate configurations for the same location
+statutoryConfigSchema.index({ country: 1, state: 1 }, { unique: true });
 
 // Prevent OverwriteModelError
 module.exports =

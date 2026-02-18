@@ -7,6 +7,8 @@ const { logAction } = require("./auditController");
 
 const { getAttendance, calculateLOP } = require("../services/attendanceService");
 const { calculateOvertime } = require("../services/overtimeService");
+const { createNotification } = require("./notificationController");
+
 
 /* =====================================================
    PAYROLL PREVIEW — PENDING
@@ -50,9 +52,14 @@ const { calculateComprehensivePayroll } = require("../services/payrollCalcServic
 /* =====================================================
    RUN PAYROLL — CALCULATE + SAVE
 ===================================================== */
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
 exports.calculatePayroll = async (req, res) => {
   try {
     const { employeeCode, country, state, startDate, endDate, financialYear } = req.body;
+
 
     if (!employeeCode || !startDate || !endDate) {
       return res.status(400).json({
@@ -94,6 +101,15 @@ exports.calculatePayroll = async (req, res) => {
       req
     });
 
+    /* ================= CREATE NOTIFICATION ================= */
+    await createNotification({
+      userId: req.user.id,
+      organizationId: req.user.organizationId,
+      title: "Payroll Calculated",
+      message: `Payroll for ${employeeCode} has been calculated for ${monthNames[new Date(startDate).getMonth()]} ${new Date(startDate).getFullYear()}.`,
+      type: "PAYROLL",
+    });
+
     res.status(201).json({ message: "Payroll generated successfully", data: payrollData });
 
   } catch (err) {
@@ -102,11 +118,10 @@ exports.calculatePayroll = async (req, res) => {
   }
 };
 
+
 /* =====================================================
    PAYROLL APPROVAL
 ===================================================== */
-const { createNotification } = require("./notificationController");
-
 exports.approvePayroll = async (req, res) => {
   try {
     const { payrollId } = req.body;

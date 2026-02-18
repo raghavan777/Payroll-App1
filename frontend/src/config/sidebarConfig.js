@@ -5,6 +5,7 @@ export const sidebarItems = {
     { path: "/add-employee", label: "Add Employee", icon: "MdPersonAdd" },
     { path: "/payroll-profiles", label: "Payroll Profiles", icon: "MdListAlt" }, // <-- Module-3
     { path: "/tax-slab", label: "Tax Slab", icon: "MdPayments" },
+    { path: "/statutory", label: "Statutory Config", icon: "MdShield" },
     { path: "/tax/slabs", label: "Tax Slab Form", icon: "MdReceiptLong" },
     { path: "/tax/declarations/new", label: "Tax Declaration Form", icon: "MdDescription" },
     { path: "/tax/declarations", label: "Tax Declaration List", icon: "MdListAlt" },

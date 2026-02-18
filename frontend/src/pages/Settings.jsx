@@ -12,6 +12,7 @@ import {
     MdLayers,
     MdShield
 } from "react-icons/md";
+import Dropdown from "../components/Dropdown";
 
 export default function Settings() {
     const [org, setOrg] = useState({
@@ -134,15 +135,16 @@ export default function Settings() {
                                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Fiscal Currency</label>
                                 <div className="relative">
                                     <MdPayment className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                                    <select
-                                        className="w-full bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-black text-slate-700 appearance-none bg-no-repeat bg-[right_1rem_center]"
+                                    <Dropdown
+                                        options={[
+                                            { value: "INR", label: "INR (Statutory ₹)" },
+                                            { value: "USD", label: "USD (Institutional $)" },
+                                            { value: "EUR", label: "EUR (Global €)" }
+                                        ]}
                                         value={org.currency}
-                                        onChange={e => setOrg({ ...org, currency: e.target.value })}
-                                    >
-                                        <option value="INR">INR (Statutory ₹)</option>
-                                        <option value="USD">USD (Institutional $)</option>
-                                        <option value="EUR">EUR (Global €)</option>
-                                    </select>
+                                        onChange={(e) => setOrg({ ...org, currency: e.target.value })}
+                                        className="w-full bg-slate-50 border-slate-200"
+                                    />
                                 </div>
                             </div>
 

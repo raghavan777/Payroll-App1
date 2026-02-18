@@ -8,8 +8,10 @@ const {
     getStatutoryConfigs,
     addStatutoryConfig,
     updateStatutoryConfig,
-    deleteStatutoryConfig
-} = require("../controllers/statutoryController");
+    deleteStatutoryConfig,
+    getTaxSlabs,
+    addTaxSlab
+} = require("../controllers/StatutoryController");
 
 // 🔹 GET all Statutory Configs (All authenticated users can see, or restrict to ADMIN)
 router.get("/", auth, getStatutoryConfigs);
@@ -22,5 +24,9 @@ router.put("/:id", auth, role(["SUPER_ADMIN"]), updateStatutoryConfig);
 
 // 🔹 DELETE Statutory Config (SUPER_ADMIN only)
 router.delete("/:id", auth, role(["SUPER_ADMIN"]), deleteStatutoryConfig);
+
+// 🔹 Legacy Tax Slab Routes
+router.get("/tax-slab", auth, getTaxSlabs);
+router.post("/tax-slab", auth, role(["SUPER_ADMIN"]), addTaxSlab);
 
 module.exports = router;

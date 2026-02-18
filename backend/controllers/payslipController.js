@@ -78,35 +78,64 @@ const generatePayslipPdf = async ({
   const pdfUrl = `/public/payslips/${fileName}`;
 
   await new Promise((resolve, reject) => {
-    const doc = new PDFDocument({ margin: 50 });
+    const doc = new PDFDocument({ margin: 50, size: 'A4' });
     const stream = fs.createWriteStream(filePath);
+    const PDFService = require("../services/pdfService");
+    const pdfService = new PDFService(doc);
 
     doc.pipe(stream);
 
-    doc.fontSize(18).text("PAYSLIP", { align: "center" });
-    doc.moveDown();
+    // 1. Header
+    pdfService.drawHeader("PAYSLIP", `Period: ${payPeriod}`);
 
-    doc.text(`Employee: ${employee.name}`);
-    doc.text(`Employee Code: ${employee.employeeCode}`);
-    doc.text(`Period: ${payPeriod}`);
-    doc.text(`Issue Date: ${issueDate.toDateString()}`);
-    doc.moveDown();
-
-    doc.text("EARNINGS");
-    Object.entries(earnings).forEach(([k, v]) =>
-      doc.text(`${k}: ${toNumber(v).toFixed(2)}`)
+    // 2. Entity Details
+    pdfService.drawEntityDetails(
+      {
+        title: "EMPLOYEE SUMMARY",
+        items: [
+          { value: employee.name, subValue: employee.employeeCode },
+          { value: employee.designation || "Employee", subValue: employee.department || "" }
+        ]
+      },
+      {
+        title: "PAYROLL DETAILS",
+        items: [
+          { label: "Pay Period", value: payPeriod },
+          { label: "Issue Date", value: issueDate.toLocaleDateString() },
+          { label: "Bank Account", value: "****" + (payroll.accountNumber?.slice(-4) || "N/A") }
+        ]
+      }
     );
-    doc.moveDown();
 
-    doc.text("DEDUCTIONS");
-    Object.entries(deductions).forEach(([k, v]) =>
-      doc.text(`${k}: ${toNumber(v).toFixed(2)}`)
-    );
-    doc.moveDown();
+    // 3. Salary Computation Table
+    const rows = [];
 
-    doc.text(`Net Salary: ${toNumber(netSalary).toFixed(2)}`, {
-      underline: true,
+    // Earnings Section
+    Object.entries(earnings).forEach(([key, value]) => {
+      if (toNumber(value) > 0) {
+        rows.push({ label: key.charAt(0).toUpperCase() + key.slice(1), value: value });
+      }
     });
+    // Gross Total (Optional, but good for clarity. Let's calculate it to be safe)
+    const totalEarnings = Object.values(earnings).reduce((a, b) => a + toNumber(b), 0);
+    rows.push({ label: "GROSS EARNINGS", value: totalEarnings, isTotal: true });
+
+    // Deductions Section
+    Object.entries(deductions).forEach(([key, value]) => {
+      if (toNumber(value) > 0) {
+        rows.push({ label: key.charAt(0).toUpperCase() + key.slice(1), value: value });
+      }
+    });
+    const totalDeductions = Object.values(deductions).reduce((a, b) => a + toNumber(b), 0);
+    rows.push({ label: "TOTAL DEDUCTIONS", value: totalDeductions, isTotal: true });
+
+    // Net Salary
+    rows.push({ label: "NET SALARY PAYABLE", value: netSalary, isHighlight: true });
+
+    pdfService.drawSummaryTable("SALARY COMPUTATION", rows, 250);
+
+    // 5. Footer
+    pdfService.drawFooter(payroll._id);
 
     doc.end();
     stream.on("finish", resolve);
@@ -148,13 +177,9 @@ exports.generatePayslip = async (req, res) => {
     if (!employee)
       return res.status(404).json({ message: "Employee not found" });
 
-    const existing = await Payslip.findOne({ payrollId });
-    if (existing)
-      return res.status(409).json({ message: "Payslip already exists" });
+    let payslip = await Payslip.findOne({ payrollId });
 
-    const { earnings, deductions, netSalary } =
-      buildSalaryBreakdown(payroll);
-
+    const { earnings, deductions, netSalary } = buildSalaryBreakdown(payroll);
     const payPeriod = normalizePeriod(payroll.periodStart);
     const issueDate = new Date();
 
@@ -168,23 +193,34 @@ exports.generatePayslip = async (req, res) => {
       issueDate,
     });
 
-    const payslip = await Payslip.create({
-      employeeId: employee._id,
-      payrollId: payroll._id,
-      earnings,
-      deductions,
-      netSalary,
-      payPeriod,
-      issueDate,
-      pdfUrl,
-    });
+    if (payslip) {
+      // Update existing payslip
+      payslip.earnings = earnings;
+      payslip.deductions = deductions;
+      payslip.netSalary = netSalary;
+      payslip.pdfUrl = pdfUrl;
+      payslip.issueDate = issueDate;
+      await payslip.save();
+    } else {
+      // Create new payslip
+      payslip = await Payslip.create({
+        employeeId: employee._id,
+        payrollId: payroll._id,
+        earnings,
+        deductions,
+        netSalary,
+        payPeriod,
+        issueDate,
+        pdfUrl,
+      });
+    }
 
     await logAction({
       userId: req.user.id,
       organizationId: req.user.organizationId,
       action: "PAYSLIP_GENERATED",
       module: "PAYSLIP",
-      details: { payrollId, employeeCode: employee.employeeCode },
+      details: { payrollId, employeeCode: employee.employeeCode, isRegenerated: !!payslip },
       req
     });
 
@@ -201,7 +237,7 @@ exports.generatePayslip = async (req, res) => {
 
     const fullUrl = `${req.protocol}://${req.get("host")}${pdfUrl}`;
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: "Payslip generated successfully",
       payslip,
       pdfUrl: fullUrl,

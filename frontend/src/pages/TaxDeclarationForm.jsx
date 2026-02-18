@@ -11,6 +11,7 @@ import {
   MdSave,
   MdShield
 } from "react-icons/md";
+import Dropdown from "../components/Dropdown";
 
 export default function TaxDeclarationForm() {
   const [form, setForm] = useState({
@@ -54,21 +55,23 @@ export default function TaxDeclarationForm() {
   return (
     <div className="space-y-8 max-w-3xl mx-auto pb-12">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Annual Tax Declaration</h1>
-        <p className="text-slate-500 font-medium mt-1">Declare your expected earnings and investments for the financial year.</p>
+      <div className="text-center md:text-left">
+        <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tighter mb-3 leading-none">Annual Tax Declaration</h1>
+        <p className="text-slate-400 font-medium italic text-sm tracking-wide">Declare your expected earnings and institutional investments for the fiscal period.</p>
       </div>
 
-      <div className="bg-white rounded-[40px] border border-slate-200 shadow-sm overflow-hidden p-8 lg:p-12">
+      <div className="premium-card p-10 lg:p-14 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none"></div>
         <form onSubmit={onSubmit} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Employee ID / Code */}
-            <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Team Member Code</label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Institutional Protocol Code</label>
               <div className="relative group">
-                <MdPerson size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <MdPerson size={24} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-indigo-400 group-focus-within:scale-110 transition-all" />
                 <input
-                  className="w-full bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-black text-slate-700 uppercase tracking-widest"
+                  className="w-full bg-white/5 border border-white/10 pl-16 pr-6 py-5 rounded-[22px] focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all font-black text-white uppercase tracking-[0.2em] text-xs placeholder:text-slate-700 shadow-inner"
                   placeholder="e.g. EMP001"
                   value={form.employeeId}
                   onChange={(e) => onChange("employeeId", e.target.value)}
@@ -78,12 +81,12 @@ export default function TaxDeclarationForm() {
             </div>
 
             {/* Financial Year */}
-            <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Fiscal Period</label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Fiscal Cycle</label>
               <div className="relative group">
-                <MdCalendarToday size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <MdCalendarToday size={24} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-indigo-400 group-focus-within:scale-110 transition-all" />
                 <input
-                  className="w-full bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-bold text-slate-700 font-mono"
+                  className="w-full bg-white/5 border border-white/10 pl-16 pr-6 py-5 rounded-[22px] focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all font-black text-white font-mono tracking-widest shadow-inner placeholder:text-slate-700"
                   placeholder="2025-2026"
                   value={form.financialYear}
                   onChange={(e) => onChange("financialYear", e.target.value)}
@@ -93,82 +96,89 @@ export default function TaxDeclarationForm() {
             </div>
 
             {/* Regime */}
-            <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Preferred Tax Regime</label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Statutory Regime Selection</label>
               <div className="relative group">
-                <MdLayers size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
-                <select
-                  className="w-full bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-black text-slate-700 appearance-none"
+                <Dropdown
+                  options={[
+                    { value: "old", label: "Standard Protocol (Old Regime)" },
+                    { value: "new", label: "Optimized Protocol (New Regime)" }
+                  ]}
                   value={form.selectedRegime}
                   onChange={(e) => onChange("selectedRegime", e.target.value)}
-                >
-                  <option value="old">Standard (Old Regime)</option>
-                  <option value="new">Simplified (New Regime)</option>
-                </select>
+                  icon={MdLayers}
+                  className="w-full"
+                />
               </div>
             </div>
 
             {/* Total Income */}
-            <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Projected Annual Income</label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] ml-1">Projected Institutional Earnings</label>
               <div className="relative group">
-                <MdAttachMoney size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                <MdAttachMoney size={24} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-emerald-400 group-focus-within:scale-110 transition-all" />
                 <input
                   type="number"
-                  className="w-full bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-black text-slate-700 text-lg"
+                  className="w-full bg-white/5 border border-white/10 pl-16 pr-10 py-5 rounded-[22px] focus:ring-8 focus:ring-emerald-500/5 focus:border-emerald-500 outline-none transition-all font-black text-white text-xl tracking-tighter shadow-inner tabular-nums placeholder:text-slate-700"
                   placeholder="0.00"
                   value={form.totalIncome}
                   onChange={(e) => onChange("totalIncome", e.target.value)}
                   required
                 />
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-600 uppercase tracking-widest">INR</span>
               </div>
             </div>
 
             {/* Investments */}
-            <div className="col-span-1 md:col-span-2 space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Deductible Investments (80C, etc.)</label>
+            <div className="col-span-1 md:col-span-2 space-y-4">
+              <label className="text-[10px] font-black text-amber-300 uppercase tracking-[0.3em] ml-1">Deductible Assets (Statutory 80C Protocols)</label>
               <div className="relative group">
-                <MdShield size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-amber-500 transition-colors" />
+                <MdShield size={24} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-amber-400 group-focus-within:rotate-12 transition-all" />
                 <input
                   type="number"
-                  className="w-full bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 rounded-2xl focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 outline-none transition-all font-black text-slate-700 text-lg"
-                  placeholder="Total amount eligible for deduction"
+                  className="w-full bg-white/5 border border-white/10 pl-16 pr-10 py-6 rounded-[24px] focus:ring-8 focus:ring-amber-500/5 focus:border-amber-500 outline-none transition-all font-black text-white text-xl tracking-tighter shadow-inner tabular-nums placeholder:text-slate-700"
+                  placeholder="Cumulative amount eligible for institutional deduction"
                   value={form.investments}
                   onChange={(e) => onChange("investments", e.target.value)}
                 />
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-600 uppercase tracking-widest">INR</span>
               </div>
             </div>
 
             {/* File Upload */}
-            <div className="col-span-1 md:col-span-2 space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Supporting Documentation (Proofs)</label>
+            <div className="col-span-1 md:col-span-2 space-y-4">
+              <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Statutory Verification Proofs</label>
               <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 flex items-center">
-                  <MdFileUpload size={24} />
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 flex items-center group-hover:text-indigo-400 transition-colors">
+                  <MdFileUpload size={32} />
                 </div>
                 <input
                   type="file"
                   multiple
-                  className="w-full bg-slate-50 border border-dashed border-slate-200 pl-14 pr-4 py-8 rounded-3xl outline-none hover:bg-slate-100/50 hover:border-slate-300 transition-all font-bold text-slate-500 cursor-pointer"
+                  className="w-full bg-white/5 border border-dashed border-white/10 pl-20 pr-8 py-10 rounded-[32px] outline-none hover:bg-white/10 hover:border-indigo-500/30 transition-all font-black text-slate-500 cursor-pointer shadow-inner text-xs uppercase tracking-[0.2em]"
                   onChange={(e) => setProofFiles(Array.from(e.target.files || []))}
                 />
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 ml-4">Accepts multiple PDF or Image files</p>
+                <div className="flex items-center gap-4 mt-4 ml-6">
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
+                  <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Institutional protocol requires PDF or high-resolution imagery</p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="pt-10 border-t border-slate-100 flex justify-end">
+          <div className="pt-12 border-t border-white/10 flex justify-end relative z-10">
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-black px-12 py-5 rounded-3xl shadow-xl shadow-indigo-600/20 active:scale-95 transition-all disabled:opacity-50"
+              className="group relative inline-flex items-center gap-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black px-12 py-5 rounded-[28px] shadow-[0_20px_50px_rgba(79,70,229,0.4)] transition-all active:scale-95 disabled:opacity-50 uppercase tracking-[0.3em] text-xs overflow-hidden"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               {loading ? (
                 <span className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin"></span>
               ) : (
                 <>
-                  <MdSave size={24} />
-                  <span>File Declaration</span>
+                  <MdSave size={24} className="relative z-10 text-white group-hover:scale-110 transition-transform" />
+                  <span className="relative z-10">Initialize Settlement Lock</span>
                 </>
               )}
             </button>

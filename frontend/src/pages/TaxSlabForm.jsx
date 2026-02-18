@@ -12,6 +12,8 @@ import {
   MdLayers
 } from "react-icons/md";
 
+import Dropdown from "../components/Dropdown";
+
 const emptySlab = { min: "", max: "", rate: "" };
 
 export default function TaxSlabForm() {
@@ -54,46 +56,49 @@ export default function TaxSlabForm() {
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
         <div>
-          <h1 className="text-3xl font-black text-slate-800 tracking-tight">Income Tax Governance</h1>
-          <p className="text-slate-500 font-medium mt-1">Configure progressive tax slabs and institutional regimes.</p>
+          <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tighter mb-3 leading-none uppercase">Governance Center</h1>
+          <p className="text-slate-400 font-medium italic text-sm tracking-wide">Configure progressive institutional tax slabs and statutory regimes.</p>
         </div>
-        <div className="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-2xl border border-emerald-100 italic text-xs font-bold">
-          <MdShield size={16} />
-          <span>Regulatory Compliant</span>
+        <div className="flex items-center gap-3 bg-emerald-500/10 text-emerald-400 px-6 py-3 rounded-2xl border border-emerald-500/20 shadow-2xl backdrop-blur-md">
+          <MdShield size={20} className="animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Regulatory Shield Active</span>
         </div>
       </div>
 
-      <div className="bg-white rounded-[40px] border border-slate-200 shadow-sm overflow-hidden p-8 lg:p-12">
+      <div className="premium-card p-10 lg:p-14 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none"></div>
         <form onSubmit={handleSubmit} className="space-y-10">
           {/* Regime & Year Selection */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-10 border-b border-slate-100">
-            <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Taxation Regime</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pb-12 border-b border-white/10 relative z-10">
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Statutory Regime Selection</label>
               <div className="relative group">
-                <MdLayers size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
-                <select
+                <Dropdown
+                  options={[
+                    { value: "old", label: "Unified Protocol (Old Regime)" },
+                    { value: "new", label: "Modernized Protocol (New Regime)" }
+                  ]}
                   value={regime}
                   onChange={(e) => setRegime(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-black text-slate-700 appearance-none"
-                >
-                  <option value="old">Unified (Old Regime)</option>
-                  <option value="new">Standardized (New Regime)</option>
-                </select>
+                  icon={MdLayers}
+                  className="w-full"
+                />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Financial Cycle</label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Fiscal Cycle Architecture</label>
               <div className="relative group">
-                <MdCalendarToday size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <MdCalendarToday size={24} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
                 <input
                   type="text"
                   placeholder="e.g. 2025-2026"
                   value={financialYear}
                   onChange={(e) => setFinancialYear(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400 font-bold text-slate-700 font-mono"
+                  className="w-full bg-white/5 border border-white/10 pl-16 pr-6 py-5 rounded-[22px] focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all font-black text-white font-mono tracking-widest text-xs shadow-inner"
                   required
                 />
               </div>
@@ -101,98 +106,97 @@ export default function TaxSlabForm() {
           </div>
 
           {/* Slab Rows */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="space-y-8 relative z-10">
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-black text-slate-800">Progressive Slabs</h3>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Income Brackets & Rates</p>
+                <h3 className="text-2xl font-black text-white tracking-tight mb-1">Progressive Architectures</h3>
+                <p className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">Institutional Bracket Recalibration</p>
               </div>
               <button
                 type="button"
                 onClick={addSlab}
-                className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-sm transition-all active:scale-95 shadow-lg shadow-slate-900/10"
+                className="group relative inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 text-white font-black px-6 py-4 rounded-2xl border border-white/10 transition-all active:scale-95 shadow-xl text-[10px] uppercase tracking-[0.2em]"
               >
-                <MdAdd size={18} />
-                <span>Insert Bracket</span>
+                <MdAdd size={20} className="group-hover:rotate-90 transition-transform duration-500" />
+                <span>Insert Increment</span>
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-6">
               {slabs.map((slab, index) => (
-                <div key={index} className="flex flex-col md:flex-row items-center gap-4 bg-slate-50 border border-slate-100 p-6 rounded-[28px] transition-all hover:bg-white hover:shadow-md group animate-in slide-in-from-left-4 duration-300">
-                  <div className="w-8 h-8 rounded-full bg-white text-slate-400 flex items-center justify-center font-black text-xs border border-slate-200">
+                <div key={index} className="flex flex-col lg:flex-row items-center gap-6 bg-white/5 border border-white/10 p-8 rounded-[32px] transition-all hover:bg-white/10 group animate-in slide-in-from-left-4 duration-500 shadow-inner">
+                  <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-black text-sm border border-indigo-500/20 shadow-lg group-hover:scale-110 transition-transform">
                     {index + 1}
                   </div>
 
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Min</span>
+                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                    <div className="relative group/input">
+                      <span className="absolute left-4 top-1.5 text-[8px] font-black text-indigo-300/40 uppercase tracking-[0.2em] group-focus-within/input:text-indigo-400 transition-colors">Minimum Protocol</span>
                       <input
                         type="number"
                         value={slab.min}
                         onChange={(e) => updateSlab(index, "min", e.target.value)}
-                        className="w-full bg-white border border-slate-200 pl-10 pr-3 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-bold text-slate-700 font-mono text-sm leading-none h-10"
+                        className="w-full bg-white/5 border border-white/5 pl-4 pr-3 pt-6 pb-2 rounded-xl focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500/30 outline-none transition-all font-black text-white font-mono text-sm shadow-inner"
                         required
                       />
                     </div>
 
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Max</span>
+                    <div className="relative group/input">
+                      <span className="absolute left-4 top-1.5 text-[8px] font-black text-indigo-300/40 uppercase tracking-[0.2em] group-focus-within/input:text-indigo-400 transition-colors">Maximum Protocol</span>
                       <input
                         type="number"
-                        placeholder="Unlimited"
+                        placeholder="UNLIMITED"
                         value={slab.max}
                         onChange={(e) => updateSlab(index, "max", e.target.value)}
-                        className="w-full bg-white border border-slate-200 pl-10 pr-3 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-bold text-slate-700 font-mono text-sm leading-none h-10"
+                        className="w-full bg-white/5 border border-white/5 pl-4 pr-3 pt-6 pb-2 rounded-xl focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500/30 outline-none transition-all font-black text-white font-mono text-sm shadow-inner placeholder:text-slate-800"
                       />
                     </div>
 
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Rate</span>
-                      <MdTrendingUp className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300" />
+                    <div className="relative group/input">
+                      <span className="absolute left-4 top-1.5 text-[8px] font-black text-emerald-400/40 uppercase tracking-[0.2em] group-focus-within/input:text-emerald-400 transition-colors">Outflow Rate %</span>
+                      <MdTrendingUp size={22} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-700 group-focus-within/input:text-emerald-500 group-focus-within/input:scale-110 transition-all" />
                       <input
                         type="number"
                         value={slab.rate}
                         onChange={(e) => updateSlab(index, "rate", e.target.value)}
-                        className="w-full bg-white border border-slate-200 pl-12 pr-10 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-black text-indigo-600 text-sm leading-none h-10"
+                        className="w-full bg-white/5 border border-white/5 pl-4 pr-12 pt-6 pb-2 rounded-xl focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500/30 outline-none transition-all font-black text-emerald-400 font-mono text-base shadow-inner"
                         required
                       />
-                      <span className="absolute right-8 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">%</span>
                     </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => removeSlab(index)}
-                    className="p-2 text-rose-400 hover:bg-rose-50 hover:text-rose-600 rounded-xl transition-all disabled:opacity-30"
+                    className="p-3 text-rose-500/30 hover:bg-rose-500/10 hover:text-rose-500 rounded-2xl transition-all disabled:opacity-0 active:scale-90"
                     disabled={slabs.length === 1}
                   >
-                    <MdRemoveCircleOutline size={22} />
+                    <MdRemoveCircleOutline size={26} />
                   </button>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Action Footer */}
-          <div className="pt-10 border-t border-slate-100 flex justify-end">
+          <div className="pt-12 border-t border-white/10 flex justify-end relative z-10">
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-black px-12 py-5 rounded-3xl shadow-xl shadow-indigo-600/20 active:scale-95 transition-all disabled:opacity-50"
+              className="group relative inline-flex items-center gap-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black px-12 py-5 rounded-[28px] shadow-[0_20px_50px_rgba(79,70,229,0.4)] transition-all active:scale-95 disabled:opacity-50 uppercase tracking-[0.3em] text-xs overflow-hidden"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               {loading ? (
                 <span className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin"></span>
               ) : (
                 <>
-                  <MdSave size={24} />
-                  <span>Deploy Tax Policy</span>
+                  <MdSave size={24} className="relative z-10 text-white group-hover:scale-110 transition-transform" />
+                  <span className="relative z-10">Commit Statutory Deployment</span>
                 </>
               )}
             </button>
           </div>
-        </form>
-      </div>
-    </div>
+        </form >
+      </div >
+    </div >
   );
 }
